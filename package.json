@@ -21,12 +21,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/anncwb/vite-plugin-mock-server"
+    "url": "https://github.com/anncwb/vite-plugin-mock"
   },
   "bugs": {
-    "url": "https://github.com/anncwb/vite-plugin-mock-server/issues"
+    "url": "https://github.com/anncwb/vite-plugin-mock/issues"
   },
-  "homepage": "https://github.com/anncwb/vite-plugin-mock-server/tree/master/#readme",
+  "homepage": "https://github.com/anncwb/vite-plugin-mock/tree/master/#readme",
   "dependencies": {
     "@rollup/plugin-node-resolve": "^9.0.0",
     "rollup-plugin-typescript": "^1.0.1",
