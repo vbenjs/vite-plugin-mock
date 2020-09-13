@@ -13,5 +13,5 @@ export declare interface MockMethod {
   url: string;
   method?: MethodType;
   timeout?: number;
-  response: ((opt: { [key: string]: string; body: any; query: any }) => any) | any;
+  response: ((opt: { [key: string]: string; body: any; query: any }) => any) | object;
 }

@@ -9,9 +9,8 @@ import Mock from 'mockjs';
 import { isArray, isFunction, sleep, isRegExp } from './utils';
 import { loadConfigFromBundledFile } from './loadConfigFromBundledFile';
 import { rollup } from 'rollup';
-
+import esbuildPlugin from 'rollup-plugin-esbuild';
 const pathResolve = require('@rollup/plugin-node-resolve');
-const typescript = require('rollup-plugin-typescript');
 
 let mockData: MockMethod[] = [];
 export async function createMockServer(
@@ -153,7 +152,7 @@ async function resolveModule(path: string): Promise<any> {
       input: path,
       treeshake: false,
       plugins: [
-        typescript({
+        esbuildPlugin({
           include: /\.[jt]sx?$/,
           exclude: /node_modules/,
           sourceMap: false,

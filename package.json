@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-mock",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A mock plugin for vite",
   "main": "dist/index.js",
   "files": [
@@ -29,13 +29,13 @@
   "homepage": "https://github.com/anncwb/vite-plugin-mock/tree/master/#readme",
   "dependencies": {
     "@rollup/plugin-node-resolve": "^9.0.0",
-    "rollup-plugin-typescript": "^1.0.1",
     "chalk": "^4.1.0",
     "chokidar": "^3.4.2",
     "esbuild": "^0.7.1",
     "glob": "^7.1.6",
     "koa-bodyparser": "^4.3.0",
-    "rollup": "^2.26.11"
+    "rollup": "^2.26.11",
+    "rollup-plugin-esbuild": "^2.5.0"
   },
   "peerDependencies": {
     "mockjs": ">=1.1.0",
