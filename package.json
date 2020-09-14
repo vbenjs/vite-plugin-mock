@@ -1,5 +1,5 @@
 {
-  "name": "vite-plugin-mock",
+  "name": "vite-plugin-mock-link",
   "version": "1.0.1",
   "description": "A mock plugin for vite",
   "main": "dist/index.js",

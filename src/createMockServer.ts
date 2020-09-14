@@ -20,6 +20,7 @@ export async function createMockServer(
     mockPath: 'mock',
     ignoreFiles: [],
     watchFiles: true,
+    supportTs: true,
     configPath: 'vite.mock.config.ts',
     ...opt,
   };
@@ -64,11 +65,8 @@ function createWatch(opt: CreateMock) {
   const watchDir = [];
   const exitsConfigPath = existsSync(absConfigPath);
 
-  if (exitsConfigPath && configPath) {
-    watchDir.push(absConfigPath);
-  } else {
-    watchDir.push(absMockPath);
-  }
+  exitsConfigPath && configPath ? watchDir.push(absConfigPath) : watchDir.push(absMockPath);
+
   const watcher = chokidar.watch(watchDir, {
     ignoreInitial: true,
   });
@@ -96,7 +94,7 @@ function cleanRequireCache(opt: CreateMock) {
 async function getMockConfig(opt: CreateMock) {
   cleanRequireCache(opt);
   const { absConfigPath, absMockPath } = getPath(opt);
-  const { ignoreFiles = [], ignore, configPath } = opt;
+  const { ignoreFiles = [], ignore, configPath, supportTs } = opt;
   let ret: any[] = [];
   if (configPath && existsSync(absConfigPath)) {
     console.log(chalk.blue(`[vite:mock-server]:load mock data from ${absConfigPath}`));
@@ -104,7 +102,7 @@ async function getMockConfig(opt: CreateMock) {
     ret = resultModule;
   } else {
     const mockFiles = glob
-      .sync('**/*.ts', {
+      .sync(`**/*.${supportTs ? 'ts' : 'js'}`, {
         cwd: absMockPath,
         ignore: ignoreFiles,
       })
@@ -172,7 +170,7 @@ async function resolveModule(path: string): Promise<any> {
   } catch (error) {}
 }
 
-// get custom config file and mock dir path
+// get custom config file path and mock dir path
 function getPath(opt: CreateMock) {
   const { mockPath, configPath } = opt;
   const cwd = process.cwd();

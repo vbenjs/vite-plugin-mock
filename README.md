@@ -46,6 +46,7 @@ export default {
 ```ts
 {
     mockPath?: string;
+    supportTs?: boolean;
     ignore?: RegExp | ((fileName: string) => boolean);
     watchFiles?: boolean;
     localEnabled?: boolean;
@@ -65,6 +66,12 @@ Set the folder where the mock .ts file is stored
 If `watchFiles:true`, the file changes in the folder will be monitored. And synchronize to the request result in real time
 
 If configPath has a value, it is invalid
+
+### supportTs
+
+**default:** true
+
+After opening, the ts file module can be read. Note that you will not be able to monitor .js files after opening.
 
 ### ignore
 
