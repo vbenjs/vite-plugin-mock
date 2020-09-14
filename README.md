@@ -16,6 +16,26 @@ and
 
 `yarn add vite-plugin-mock -D` or `npm i vite-plugin-mock -D`
 
+**Run Example**
+
+```bash
+
+# ts example
+cd ./examples/ts-examples
+
+yarn install
+
+yarn serve
+
+# js example
+
+cd ./examples/js-examples
+
+yarn install
+
+yarn serve
+```
+
 ## Usage
 
 **Development environment**
