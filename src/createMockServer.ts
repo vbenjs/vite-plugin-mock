@@ -141,33 +141,31 @@ async function getMockConfig(opt: CreateMock) {
 // Inspired by vite
 // support mock .ts files
 async function resolveModule(path: string): Promise<any> {
-  try {
-    // use node-resolve to support .ts files
-    const nodeResolve = pathResolve.nodeResolve({
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
-    });
-    const bundle = await rollup({
-      input: path,
-      treeshake: false,
-      plugins: [
-        esbuildPlugin({
-          include: /\.[jt]sx?$/,
-          exclude: /node_modules/,
-          sourceMap: false,
-        }),
-        nodeResolve,
-      ],
-    });
+  // use node-resolve to support .ts files
+  const nodeResolve = pathResolve.nodeResolve({
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
+  });
+  const bundle = await rollup({
+    input: path,
+    treeshake: false,
+    plugins: [
+      esbuildPlugin({
+        include: /\.[jt]sx?$/,
+        exclude: /node_modules/,
+        sourceMap: false,
+      }),
+      nodeResolve,
+    ],
+  });
 
-    const {
-      output: [{ code }],
-    } = await bundle.generate({
-      exports: 'named',
-      format: 'cjs',
-    });
+  const {
+    output: [{ code }],
+  } = await bundle.generate({
+    exports: 'named',
+    format: 'cjs',
+  });
 
-    return await loadConfigFromBundledFile(path, code);
-  } catch (error) {}
+  return await loadConfigFromBundledFile(path, code);
 }
 
 // get custom config file path and mock dir path
