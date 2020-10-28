@@ -10,6 +10,8 @@ import { isArray, isFunction, sleep, isRegExp } from './utils';
 import { loadConfigFromBundledFile } from './loadConfigFromBundledFile';
 import { rollup } from 'rollup';
 import esbuildPlugin from 'rollup-plugin-esbuild';
+// @ts-ignore
+import bodyParser from './koaBodyparse';
 const pathResolve = require('@rollup/plugin-node-resolve');
 
 let mockData: MockMethod[] = [];
@@ -37,24 +39,30 @@ export function getMockData() {
 }
 
 // request match
-export async function requestMiddle(ctx: ParameterizedContext<DefaultState, Context>, next: any) {
-  const path = ctx.path;
-  const req = mockData.find((item) => item.url === path);
-  if (req) {
-    const { response, timeout } = req;
-    if (timeout) {
-      await sleep(timeout);
-    }
-    const { body, query } = ctx.request;
-    const mockRes = isFunction(response) ? response({ body, query }) : response;
-    console.log(`${chalk.green('[vite:mock-server]:request invoke: ' + ` ${chalk.cyan(path)} `)}`);
-    ctx.type = 'json';
-    ctx.status = 200;
+export function requestMiddle(app: any) {
+  return async (ctx: ParameterizedContext<DefaultState, Context>, next: any) => {
+    const path = ctx.path;
+    const req = mockData.find((item) => item.url === path);
+    if (req) {
+      const { response, timeout } = req;
+      if (timeout) {
+        await sleep(timeout);
+      }
+      const { query } = ctx.request;
+      const bodyParserFn = bodyParser(app);
+      const body = await bodyParserFn(ctx);
+      const mockRes = isFunction(response) ? response({ body, query }) : response;
+      console.log(
+        `${chalk.green('[vite:mock-server]:request invoke: ' + ` ${chalk.cyan(path)} `)}`
+      );
+      ctx.type = 'json';
+      ctx.status = 200;
 
-    ctx.body = Mock.mock(mockRes);
-    return;
-  }
-  await next();
+      ctx.body = Mock.mock(mockRes);
+      return;
+    }
+    await next();
+  };
 }
 
 // create watch mock

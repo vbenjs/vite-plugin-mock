@@ -2,12 +2,12 @@ import { ServerPlugin } from 'vite';
 
 import { createMockServer, requestMiddle } from './createMockServer';
 import { CreateMock } from './types';
-import bodyParser from 'koa-bodyparser';
+// import bodyParser from 'koa-bodyparser';
 
 export const createMockServerPlugin = (opt: CreateMock): ServerPlugin => {
   return ({ app }) => {
-    app.use(bodyParser());
+    // app.use(bodyParser());
     createMockServer(opt);
-    app.use(requestMiddle);
+    app.use(requestMiddle(app));
   };
 };
