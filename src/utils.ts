@@ -16,6 +16,10 @@ export function isRegExp(val: unknown): val is RegExp {
   return is(val, 'RegExp');
 }
 
+export function isBoolean(val: unknown): val is boolean {
+  return is(val, 'Boolean');
+}
+
 export function sleep(time: number) {
   return new Promise((resolve) => {
     setTimeout(() => {

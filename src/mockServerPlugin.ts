@@ -8,6 +8,6 @@ export const createMockServerPlugin = (opt: CreateMock): ServerPlugin => {
   return ({ app }) => {
     // app.use(bodyParser());
     createMockServer(opt);
-    app.use(requestMiddle(app));
+    app.use(requestMiddle(app, opt));
   };
 };

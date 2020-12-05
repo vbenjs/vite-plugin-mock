@@ -123,6 +123,14 @@ Set the data entry that the mock reads. When the file exists and is located in t
 
 The project uses glob to read the folder set by mockPath. This parameter is used as the parameter of the glob module
 
+### ignoreFiles
+
+**type** boolean|string
+
+**default** `YYYY-MM-DD HH:mm:ss`
+
+Whether to display the request time. If it is a string, use dayjs to format
+
 ## Mock file example
 
 `/path/mock`

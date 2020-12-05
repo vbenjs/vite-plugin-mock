@@ -6,6 +6,7 @@ export interface CreateMock {
   watchFiles?: boolean;
   localEnabled?: boolean;
   supportTs?: boolean;
+  showTime?: boolean | string;
 }
 
 export type MethodType = 'get' | 'post' | 'put' | 'delete' | 'patch';

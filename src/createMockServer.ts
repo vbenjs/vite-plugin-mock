@@ -6,10 +6,11 @@ import chokidar from 'chokidar';
 import chalk from 'chalk';
 import glob from 'glob';
 import Mock from 'mockjs';
-import { isArray, isFunction, sleep, isRegExp } from './utils';
+import { isArray, isFunction, sleep, isRegExp, isBoolean } from './utils';
 import { loadConfigFromBundledFile } from './loadConfigFromBundledFile';
 import { rollup } from 'rollup';
 import esbuildPlugin from 'rollup-plugin-esbuild';
+import dayjs from 'dayjs';
 // @ts-ignore
 import bodyParser from './koaBodyparse';
 const pathResolve = require('@rollup/plugin-node-resolve');
@@ -38,8 +39,27 @@ export function getMockData() {
   return mockData;
 }
 
+function getInvokeTime(opt: CreateMock): string {
+  const { showTime } = opt;
+  const defTime = ` - ${dayjs().format('YYYY-MM-DD HH:mm:ss')}`;
+  if (isBoolean(showTime)) {
+    if (!showTime) {
+      return '';
+    } else {
+      return defTime;
+    }
+  }
+  if (!showTime) return '';
+
+  try {
+    return dayjs().format(showTime);
+  } catch (error) {
+    return defTime;
+  }
+}
+
 // request match
-export function requestMiddle(app: any) {
+export function requestMiddle(app: any, opt: CreateMock) {
   return async (ctx: ParameterizedContext<DefaultState, Context>, next: any) => {
     const path = ctx.path;
     const req = mockData.find((item) => item.url === path);
@@ -53,7 +73,9 @@ export function requestMiddle(app: any) {
       const body = await bodyParserFn(ctx);
       const mockRes = isFunction(response) ? response({ body, query }) : response;
       console.log(
-        `${chalk.green('[vite:mock-server]:request invoke: ' + ` ${chalk.cyan(path)} `)}`
+        `${chalk.green(
+          `[vite:mock-server${getInvokeTime(opt)}]:request invoke: ` + ` ${chalk.cyan(path)} `
+        )}`
       );
       ctx.type = 'json';
       ctx.status = 200;
