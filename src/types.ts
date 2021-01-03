@@ -18,3 +18,7 @@ export declare interface MockMethod {
   statusCode?: number;
   response: ((opt: { body: Record<string, any>; query: Record<string, any> }) => any) | object;
 }
+
+export interface NodeModuleWithCompile extends NodeModule {
+  _compile(code: string, filename: string): any;
+}

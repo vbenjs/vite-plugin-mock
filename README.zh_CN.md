@@ -1,14 +1,14 @@
 # vite-plugin-mock
 
-**English** | [中文](./README.zh_CN.md)
+**中文** | [English](./README.md)
 
 [![npm][npm-img]][npm-url] [![node][node-img]][node-url]
 
-Provide local and prod mocks for vite.
+提供本地和生产模拟服务。
 
-A mock plugin for vite, developed based on mockjs. And support the local environment and production environment at the same time. Connect service middleware is used locally, mockjs is used online
+vite 的数据模拟插件，是基于 vite.js 开发的。 并同时支持本地环境和生产环境。 Connect 服务中间件在本地使用，mockjs 在线使用
 
-### Install (yarn or npm)
+### 安装 (yarn or npm)
 
 **node version:** >=12.0.0
 
@@ -20,9 +20,9 @@ and
 
 `yarn add vite-plugin-mock@next -D` or `npm i vite-plugin-mock@next -D`
 
-### Example
+### 示例
 
-**Run Example**
+**运行示例**
 
 ```bash
 
@@ -42,15 +42,15 @@ yarn install
 yarn serve
 ```
 
-## Usage
+## 使用
 
-**Development environment**
+**开发环境**
 
-The development environment is implemented using Connect middleware。
+开发环境是使用 Connect 中间件实现的。
 
-Different from the production environment, you can view the network request record in the Google Chrome console
+与生产环境不同，您可以在 Google Chrome 控制台中查看网络请求记录
 
-- Config plugin in vite.config.ts
+- vite.config.ts 配置
 
 ```ts
 import { UserConfigExport, ConfigEnv } from 'vite';
@@ -72,7 +72,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 };
 ```
 
-- viteMockServe Options
+- viteMockServe 配置
 
 ```ts
 {
@@ -86,7 +86,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 }
 ```
 
-## Option description
+## 配置说明
 
 ### mockPath
 
@@ -94,11 +94,11 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 **default:** 'mock'
 
-Set the folder where the mock .ts file is stored
+设置模拟.ts 文件的存储文件夹
 
-If `watchFiles:true`, the file changes in the folder will be monitored. And synchronize to the request result in real time
+如果`watchFiles：true`，将监视文件夹中的文件更改。 并实时同步到请求结果
 
-If configPath has a value, it is invalid
+如果 `configPath` 具有值，则无效
 
 ### supportTs
 
@@ -106,7 +106,7 @@ If configPath has a value, it is invalid
 
 **default:** true
 
-After opening, the ts file module can be read. Note that you will not be able to monitor .js files after opening.
+打开后，可以读取 ts 文件模块。 请注意，打开后将无法监视.js 文件。
 
 ### ignore
 
@@ -114,7 +114,7 @@ After opening, the ts file module can be read. Note that you will not be able to
 
 **default:** undefined
 
-When automatically reading analog .ts files, ignore files in the specified format
+自动读取模拟.ts 文件时，请忽略指定格式的文件
 
 ### watchFiles
 
@@ -122,7 +122,7 @@ When automatically reading analog .ts files, ignore files in the specified forma
 
 **default:** true
 
-Set whether to monitor changes in mock .ts files
+设置是否监视模拟.ts 文件中的更改
 
 ### localEnabled
 
@@ -130,7 +130,7 @@ Set whether to monitor changes in mock .ts files
 
 **default:** command === 'serve'
 
-Set whether to enable the local mock .ts file, do not open it in the production environment
+设置是否启用本地模拟.ts 文件，不要在生产环境中打开它
 
 ### configPath
 
@@ -138,7 +138,7 @@ Set whether to enable the local mock .ts file, do not open it in the production 
 
 **default:** vite.mock.config.ts
 
-Set the data entry that the mock reads. When the file exists and is located in the project root directory, the file will be read and used first. The configuration file returns an array
+设置模拟读取的数据条目。 当文件存在并且位于项目根目录中时，将首先读取并使用该文件。 配置文件返回一个数组
 
 ### ignoreFiles
 
@@ -146,7 +146,7 @@ Set the data entry that the mock reads. When the file exists and is located in t
 
 **default:** []
 
-The project uses glob to read the folder set by mockPath. This parameter is used as the parameter of the glob module
+该项目使用 glob 来读取模拟路径设置的文件夹。 此参数用作 glob 模块的参数
 
 ### showTime
 
@@ -154,7 +154,7 @@ The project uses glob to read the folder set by mockPath. This parameter is used
 
 **default** `YYYY-MM-DD HH:mm:ss`
 
-Whether to display the request time. If it is a string, use dayjs to format
+是否显示请求时间。 如果是字符串，使用 dayjs 格式化
 
 ## Mock file example
 
@@ -211,19 +211,19 @@ export default [
 
 ```
 
-## Usage in Production environment
+## 在生产环境中的使用
 
-### Example
+### 示例
 
-Create a new mockProdServer.ts file
+创建`mockProdServer.ts`文件
 
 ```ts
 //  mockProdServer.ts
 
 import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
 
-// Import your mock .ts files one by one
-// If you use vite.mock.config.ts, just import the file directly
+// 逐一导入您的模拟.ts文件
+// 如果使用vite.mock.config.ts，只需直接导入文件
 import testModule from '../mock/test';
 
 export function setupProdMockServer() {
@@ -245,8 +245,9 @@ if (process.env.NODE_ENV === 'production') {
 
 ## Note
 
-- The node module cannot be used in the mock .ts file, otherwise the production environment will fail
-- Mock is used in the production environment, which is only suitable for some test environments. Do not open it in the formal environment to avoid unnecessary errors. At the same time, in the production environment, it may affect normal Ajax requests, such as file upload failure, etc.
+- 无法在 mock.ts 文件中使用节点模块，否则生产环境将失败
+-
+- 模拟数据用于生产环境，仅适用于某些测试环境。 不要在正式环境中打开它，以避免不必要的错误。 同时，在生产环境中，它可能会影响正常的 Ajax 请求，例如文件上传失败等。
 
 ## License
 

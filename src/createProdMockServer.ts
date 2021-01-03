@@ -1,3 +1,6 @@
+/*
+ * @Description: For use in a production environment. Note that this time the file upload will fail
+ */
 import Mock from 'mockjs';
 import { param2Obj } from './utils';
 

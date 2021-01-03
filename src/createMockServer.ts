@@ -6,8 +6,14 @@ import chalk from 'chalk';
 import url from 'url';
 import glob from 'glob';
 import Mock from 'mockjs';
-import { isArray, isFunction, sleep, isRegExp, isBoolean } from './utils';
-import { loadConfigFromBundledFile } from './loadConfigFromBundledFile';
+import {
+  isArray,
+  isFunction,
+  sleep,
+  isRegExp,
+  isBoolean,
+  loadConfigFromBundledFile,
+} from './utils';
 import { rollup } from 'rollup';
 import esbuildPlugin from 'rollup-plugin-esbuild';
 import dayjs from 'dayjs';
@@ -17,6 +23,7 @@ import { NextHandleFunction, Server } from 'connect';
 const pathResolve = require('@rollup/plugin-node-resolve');
 
 let mockData: MockMethod[] = [];
+
 export async function createMockServer(
   opt: ViteMockOptions = { mockPath: 'mock', ignoreFiles: [], configPath: 'vite.mock.config' }
 ) {
@@ -36,6 +43,7 @@ export async function createMockServer(
     watch && watch();
   }
 }
+
 export function getMockData() {
   return mockData;
 }
