@@ -47,11 +47,11 @@ Different from the production environment, you can view the network request reco
 - Config plugin in vite.config.ts
 
 ```ts
-import { createMockServer } from 'vite-plugin-mock';
+import { viteMockServe } from 'vite-plugin-mock';
 
 export default {
   plugins: [
-    createMockServer({
+    viteMockServe({
       ignore: /^\_/,
       mockPath: 'mock',
       watchFiles: true,
@@ -61,7 +61,7 @@ export default {
 };
 ```
 
-- createMockServer Options
+- viteMockServe Options
 
 ```ts
 {
