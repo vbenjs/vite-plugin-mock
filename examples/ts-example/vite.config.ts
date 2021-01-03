@@ -1,12 +1,17 @@
-import { UserConfig } from 'vite';
-import { createMockServer } from 'vite-plugin-mock';
+import { viteMockServe } from 'vite-plugin-mock';
 
-const config: UserConfig = {
-  plugins: [
-    createMockServer({
-      // default
-      mockPath: 'mock',
-    }),
-  ],
+import { UserConfigExport, ConfigEnv } from 'vite';
+import vue from '@vitejs/plugin-vue';
+
+export default ({ command }: ConfigEnv): UserConfigExport => {
+  return {
+    plugins: [
+      vue(),
+      viteMockServe({
+        // default
+        mockPath: 'mock',
+        localEnabled: command === 'serve',
+      }),
+    ],
+  };
 };
-export default config;

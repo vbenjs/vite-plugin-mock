@@ -8,12 +8,16 @@ export function isFunction<T = Function>(val: unknown): val is T {
   return is(val, 'Function');
 }
 
-export function isArray(val: unknown): val is Array<any> {
+export function isArray(val: any): val is Array<any> {
   return val && Array.isArray(val);
 }
 
 export function isRegExp(val: unknown): val is RegExp {
   return is(val, 'RegExp');
+}
+
+export function isNumber(val: unknown): val is number {
+  return is(val, 'Number');
 }
 
 export function isBoolean(val: unknown): val is boolean {
@@ -23,7 +27,7 @@ export function isBoolean(val: unknown): val is boolean {
 export function sleep(time: number) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve();
+      resolve('');
     }, time);
   });
 }

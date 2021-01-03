@@ -1,4 +1,4 @@
-export interface CreateMock {
+export interface ViteMockOptions {
   mockPath?: string;
   configPath?: string;
   ignoreFiles?: string[];
@@ -15,5 +15,6 @@ export declare interface MockMethod {
   url: string;
   method?: MethodType;
   timeout?: number;
-  response: ((opt: { body: any; query: any }) => any) | object;
+  statusCode?: number;
+  response: ((opt: { body: Record<string, any>; query: Record<string, any> }) => any) | object;
 }

@@ -1,9 +1,9 @@
-import type { CreateMock, MockMethod } from './types';
-import { ParameterizedContext, Context, DefaultState } from 'koa';
+import type { ViteMockOptions, MockMethod } from './types';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import chokidar from 'chokidar';
 import chalk from 'chalk';
+import url from 'url';
 import glob from 'glob';
 import Mock from 'mockjs';
 import { isArray, isFunction, sleep, isRegExp, isBoolean } from './utils';
@@ -11,13 +11,14 @@ import { loadConfigFromBundledFile } from './loadConfigFromBundledFile';
 import { rollup } from 'rollup';
 import esbuildPlugin from 'rollup-plugin-esbuild';
 import dayjs from 'dayjs';
-// @ts-ignore
-import bodyParser from './koaBodyparse';
+
+import { NextHandleFunction, Server } from 'connect';
+
 const pathResolve = require('@rollup/plugin-node-resolve');
 
 let mockData: MockMethod[] = [];
 export async function createMockServer(
-  opt: CreateMock = { mockPath: 'mock', ignoreFiles: [], configPath: 'vite.mock.config' }
+  opt: ViteMockOptions = { mockPath: 'mock', ignoreFiles: [], configPath: 'vite.mock.config' }
 ) {
   opt = {
     mockPath: 'mock',
@@ -39,7 +40,7 @@ export function getMockData() {
   return mockData;
 }
 
-function getInvokeTime(opt: CreateMock): string {
+function getInvokeTime(opt: ViteMockOptions): string {
   const { showTime } = opt;
   const defTime = ` - ${dayjs().format('YYYY-MM-DD HH:mm:ss')}`;
   if (isBoolean(showTime)) {
@@ -59,36 +60,56 @@ function getInvokeTime(opt: CreateMock): string {
 }
 
 // request match
-export function requestMiddle(app: any, opt: CreateMock) {
-  return async (ctx: ParameterizedContext<DefaultState, Context>, next: any) => {
-    const path = ctx.path;
-    const req = mockData.find((item) => item.url === path);
-    if (req) {
-      const { response, timeout } = req;
+// @ts-ignore
+export function requestMiddle(app: Server, opt: ViteMockOptions) {
+  const middleware: NextHandleFunction = async (req, res, next) => {
+    let queryParams: {
+      query?: {
+        [key: string]: any;
+      };
+      pathname?: string | null;
+    } = {};
+
+    const isGet = req.method === 'GET';
+    if (isGet && req.url) {
+      queryParams = url.parse(req.url, true);
+    }
+
+    const matchReq = mockData.find((item) => {
+      if (isGet) {
+        return item.url === queryParams.pathname;
+      }
+      return item.url === req.url;
+    });
+    if (matchReq) {
+      const { response, timeout, statusCode } = matchReq;
+
       if (timeout) {
         await sleep(timeout);
       }
-      const { query } = ctx.request;
-      const bodyParserFn = bodyParser(app);
-      const body = await bodyParserFn(ctx);
+      const { query = {} } = queryParams;
+
+      const body = (req as any).body;
       const mockRes = isFunction(response) ? response({ body, query }) : response;
       console.log(
         `${chalk.green(
-          `[vite:mock-server${getInvokeTime(opt)}]:request invoke: ` + ` ${chalk.cyan(path)} `
+          `[vite:mock-server${getInvokeTime(opt)}]:request invoke: ` + ` ${chalk.cyan(req.url)} `
         )}`
       );
-      ctx.type = 'json';
-      ctx.status = 200;
+      res.setHeader('Content-Type', 'application/json');
 
-      ctx.body = Mock.mock(mockRes);
+      res.statusCode = statusCode || 200;
+
+      res.end(JSON.stringify(Mock.mock(mockRes)));
       return;
     }
-    await next();
+    next?.();
   };
+  return middleware;
 }
 
 // create watch mock
-function createWatch(opt: CreateMock) {
+function createWatch(opt: ViteMockOptions) {
   const { configPath } = opt;
   const { absConfigPath, absMockPath } = getPath(opt);
   if (process.env.VITE_DISABLED_WATCH_MOCK === 'true') return;
@@ -111,7 +132,7 @@ function createWatch(opt: CreateMock) {
 }
 
 // clear cache
-function cleanRequireCache(opt: CreateMock) {
+function cleanRequireCache(opt: ViteMockOptions) {
   const { absConfigPath, absMockPath } = getPath(opt);
   Object.keys(require.cache).forEach((file) => {
     if (file === absConfigPath || file.indexOf(absMockPath) > -1) {
@@ -121,7 +142,7 @@ function cleanRequireCache(opt: CreateMock) {
 }
 
 // load mock .ts files and watch
-async function getMockConfig(opt: CreateMock) {
+async function getMockConfig(opt: ViteMockOptions) {
   cleanRequireCache(opt);
   const { absConfigPath, absMockPath } = getPath(opt);
   const { ignoreFiles = [], ignore, configPath, supportTs } = opt;
@@ -199,7 +220,7 @@ async function resolveModule(path: string): Promise<any> {
 }
 
 // get custom config file path and mock dir path
-function getPath(opt: CreateMock) {
+function getPath(opt: ViteMockOptions) {
   const { mockPath, configPath } = opt;
   const cwd = process.cwd();
   const absMockPath = join(cwd, mockPath || '');

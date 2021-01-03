@@ -1,13 +1,18 @@
-import { createMockServer } from 'vite-plugin-mock';
+import { viteMockServe } from 'vite-plugin-mock';
 
-const config = {
-  plugins: [
-    createMockServer({
-      // close support .ts file
-      supportTs: false,
-      // default
-      mockPath: 'mock',
-    }),
-  ],
+import vue from '@vitejs/plugin-vue';
+
+export default ({ command }) => {
+  return {
+    plugins: [
+      vue(),
+      viteMockServe({
+        // close support .ts file
+        supportTs: false,
+        // default
+        mockPath: 'mock',
+        localEnabled: command === 'serve',
+      }),
+    ],
+  };
 };
-export default config;

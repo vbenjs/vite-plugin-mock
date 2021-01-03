@@ -1,15 +1,24 @@
-import { createMockServerPlugin } from './mockServerPlugin';
-import { CreateMock } from './types';
-import { Plugin } from 'vite';
-
-export function createMockServer(opt: CreateMock): Plugin {
-  // Turn on only when needed
-  const { localEnabled = process.env.NODE_ENV === 'development' } = opt;
-  if (!localEnabled) {
-    return {};
-  }
+import { ViteMockOptions } from './types';
+import { Plugin, ResolvedConfig } from 'vite';
+import { createMockServer, requestMiddle } from './createMockServer';
+import bodyParser from 'body-parser';
+export function viteMockServe(opt: ViteMockOptions): Plugin {
+  let config: ResolvedConfig;
   return {
-    configureServer: createMockServerPlugin(opt),
+    name: 'vite:mock',
+    configResolved(resolvedConfig) {
+      config = resolvedConfig;
+    },
+    configureServer: ({ app }) => {
+      const { localEnabled = config.command === 'serve' } = opt;
+      if (!localEnabled) return;
+      createMockServer(opt);
+      // parse application/x-www-form-urlencoded
+      app.use(bodyParser.urlencoded({ extended: false }));
+      // parse application/json
+      app.use(bodyParser.json());
+      app.use(requestMiddle(app, opt));
+    },
   };
 }
 

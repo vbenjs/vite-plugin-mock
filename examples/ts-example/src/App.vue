@@ -11,7 +11,7 @@
     name: 'App',
     setup() {
       const getRoleById = () => {
-        axios.get('/api/getRoleById', { params: { id: 1 } }).then((res) => {
+        axios.get('/api/getRoleById', { params: { id: 2 } }).then((res) => {
           console.log(res);
         });
       };

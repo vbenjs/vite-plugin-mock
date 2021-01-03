@@ -14,7 +14,7 @@ A mock plugin for vite, developed based on mockjs. And support the local environ
 
 and
 
-`yarn add vite-plugin-mock -D` or `npm i vite-plugin-mock -D`
+`yarn add vite-plugin-mock@next -D` or `npm i vite-plugin-mock@next -D`
 
 **Run Example**
 
@@ -178,6 +178,8 @@ export default [
   method?: MethodType;
   // Request time in milliseconds
   timeout?: number;
+  // default: 200
+  statusCode?:number;
   // response data
   response: ((opt: { [key: string]: string; body: any; query: any }) => any) | any;
 }
