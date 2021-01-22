@@ -318,11 +318,9 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 };
 ```
 
-```
+## 示例项目
 
-
-
-
+[Vben Admin](https://github.com/anncwb/vue-vben-admin)
 
 ## Note
 
@@ -338,4 +336,3 @@ MIT
 [npm-url]: https://npmjs.com/package/vite-plugin-mock
 [node-img]: https://img.shields.io/node/v/vite-plugin-mock.svg
 [node-url]: https://nodejs.org/en/about/releases/
-```

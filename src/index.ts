@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import path from 'path';
 
 export function viteMockServe(opt: ViteMockOptions): Plugin {
-  const { supportTs } = opt;
+  const { supportTs = true } = opt;
   const {
     injectFile = normalizePath(path.resolve(process.cwd(), `src/main.${supportTs ? 'ts' : 'js'}`)),
   } = opt;
