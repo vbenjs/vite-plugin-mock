@@ -4,8 +4,9 @@ import { join } from 'path';
 import chokidar from 'chokidar';
 import chalk from 'chalk';
 import url from 'url';
-import glob from 'glob';
+import fg from 'fast-glob';
 import Mock from 'mockjs';
+
 import {
   isArray,
   isFunction,
@@ -18,7 +19,7 @@ import { rollup } from 'rollup';
 import esbuildPlugin from 'rollup-plugin-esbuild';
 import dayjs from 'dayjs';
 
-import { NextHandleFunction, Server } from 'connect';
+import { NextHandleFunction } from 'connect';
 
 const pathResolve = require('@rollup/plugin-node-resolve');
 
@@ -44,19 +45,11 @@ export async function createMockServer(
   }
 }
 
-export function getMockData() {
-  return mockData;
-}
-
 function getInvokeTime(opt: ViteMockOptions): string {
   const { showTime } = opt;
   const defTime = ` - ${dayjs().format('YYYY-MM-DD HH:mm:ss')}`;
   if (isBoolean(showTime)) {
-    if (!showTime) {
-      return '';
-    } else {
-      return defTime;
-    }
+    return !showTime ? '' : defTime;
   }
   if (!showTime) return '';
 
@@ -69,7 +62,7 @@ function getInvokeTime(opt: ViteMockOptions): string {
 
 // request match
 // @ts-ignore
-export function requestMiddle(app: Server, opt: ViteMockOptions) {
+export function requestMiddle(opt: ViteMockOptions) {
   const middleware: NextHandleFunction = async (req, res, next) => {
     let queryParams: {
       query?: {
@@ -111,7 +104,7 @@ export function requestMiddle(app: Server, opt: ViteMockOptions) {
       res.end(JSON.stringify(Mock.mock(mockRes)));
       return;
     }
-    next?.();
+    next();
   };
   return middleware;
 }
@@ -160,7 +153,7 @@ async function getMockConfig(opt: ViteMockOptions) {
     let resultModule = await resolveModule(absConfigPath);
     ret = resultModule;
   } else {
-    const mockFiles = glob
+    const mockFiles = fg
       .sync(`**/*.${supportTs ? 'ts' : 'js'}`, {
         cwd: absMockPath,
         ignore: ignoreFiles,
@@ -202,7 +195,7 @@ async function getMockConfig(opt: ViteMockOptions) {
 async function resolveModule(path: string): Promise<any> {
   // use node-resolve to support .ts files
   const nodeResolve = pathResolve.nodeResolve({
-    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json'],
+    extensions: ['.js', '.ts'],
   });
   const bundle = await rollup({
     input: path,

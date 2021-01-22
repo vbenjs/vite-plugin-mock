@@ -1,23 +1,45 @@
 import { ViteMockOptions } from './types';
-import { Plugin, ResolvedConfig } from 'vite';
+import { Plugin, ResolvedConfig, normalizePath } from 'vite';
 import { createMockServer, requestMiddle } from './createMockServer';
 import bodyParser from 'body-parser';
+import path from 'path';
+
 export function viteMockServe(opt: ViteMockOptions): Plugin {
+  const { supportTs } = opt;
+  const {
+    injectFile = normalizePath(path.resolve(process.cwd(), `src/main.${supportTs ? 'ts' : 'js'}`)),
+  } = opt;
+
+  let isDev = false;
+
   let config: ResolvedConfig;
   return {
     name: 'vite:mock',
+    enforce: 'pre',
     configResolved(resolvedConfig) {
       config = resolvedConfig;
+      isDev = config.command === 'serve' && !config.isProduction;
     },
-    configureServer: ({ app }) => {
-      const { localEnabled = config.command === 'serve' } = opt;
+    configureServer: ({ middlewares }) => {
+      const { localEnabled = isDev } = opt;
       if (!localEnabled) return;
       createMockServer(opt);
       // parse application/x-www-form-urlencoded
-      app.use(bodyParser.urlencoded({ extended: false }));
+      middlewares.use(bodyParser.urlencoded({ extended: false }));
       // parse application/json
-      app.use(bodyParser.json());
-      app.use(requestMiddle(app, opt));
+      middlewares.use(bodyParser.json());
+      middlewares.use(requestMiddle(opt));
+    },
+
+    async transform(code: string, id: string) {
+      if (isDev || !id.endsWith(injectFile)) return code;
+      const { prodEnabled = true, injectCode = '' } = opt;
+      if (!prodEnabled) return;
+      return `
+      ${code}
+      \n
+      ${injectCode}
+      `;
     },
   };
 }

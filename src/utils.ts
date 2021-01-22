@@ -35,22 +35,6 @@ export function sleep(time: number) {
   });
 }
 
-export function param2Obj(url: string) {
-  const search = url.split('?')[1];
-  if (!search) {
-    return {};
-  }
-  return JSON.parse(
-    '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
-  );
-}
-
 export async function loadConfigFromBundledFile(fileName: string, bundledCode: string) {
   const extension = path.extname(fileName);
   const defaultLoader = require.extensions[extension]!;

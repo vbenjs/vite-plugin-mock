@@ -12,7 +12,7 @@ A mock plugin for vite, developed based on mockjs. And support the local environ
 
 **node version:** >=12.0.0
 
-**vite version:** >=2.0.0-beta.4
+**vite version:** >=2.0.0-beta.36
 
 `yarn add mockjs` or `yarn add mockjs -S`
 
@@ -83,6 +83,9 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
     localEnabled?: boolean;
     ignoreFiles?: string[];
     configPath?: string;
+    prodEnabled?: boolean;
+    injectFile?: string;
+    injectCode?: string;
 }
 ```
 
@@ -131,6 +134,34 @@ Set whether to monitor changes in mock .ts files
 **default:** command === 'serve'
 
 Set whether to enable the local mock .ts file, do not open it in the production environment
+
+### prodEnabled
+
+**type:** boolean
+
+**default:** command !=='serve'
+
+Set whether to enable mock function for packaging
+
+### injectCode
+
+**type:** string
+
+**default:**''
+
+If the mock function is enabled in the production environment, that is, `localEnabled=true`, the code will be injected into the bottom of the file corresponding to `injectFile`. The default is `main.ts`
+
+The advantage of this is that you can dynamically control whether mock is enabled in the production environment and mock.js will not be packaged when it is not enabled.
+
+If the code is written directly in `main.ts`, no matter whether it is turned on or not, the final package will include `mock.js`
+
+### injectFile
+
+**type:** string
+
+**default:** `path.resolve(process.cwd(),'src/main.ts')`
+
+The file injected by `injectCode` code, the default is `src/main.ts` in the project root directory
 
 ### configPath
 
@@ -213,7 +244,7 @@ export default [
 
 ## Usage in Production environment
 
-### Example
+### Example 1 (2.0.0-rc1 is no longer recommended)
 
 Create a new mockProdServer.ts file
 
@@ -243,6 +274,52 @@ if (process.env.NODE_ENV === 'production') {
 }
 ```
 
+### Example 2 (2.0.0-rc1+ recommended)
+
+Create the `mockProdServer.ts` file
+
+```ts
+//  mockProdServer.ts
+
+import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
+
+// Import your mock .ts files one by one
+// If you use vite.mock.config.ts, just import the file directly
+import testModule from '../mock/test';
+
+export function setupProdMockServer() {
+  createProdMockServer([...testModule]);
+}
+```
+
+配置 `vite-plugin-mock`
+
+```ts
+import { viteMockServe } from 'vite-plugin-mock';
+
+import { UserConfigExport, ConfigEnv } from 'vite';
+
+export default ({ command }: ConfigEnv): UserConfigExport => {
+  // According to the project configuration. Can be configured in the .env file
+  let prodMock = true;
+  return {
+    plugins: [
+      viteMockServe({
+        mockPath: 'mock',
+        localEnabled: command === 'serve',
+        prodEnabled: command !== 'serve' && prodMock,
+        injectCode: `
+          import { setupProdMockServer } from './mockProdServer';
+          setupProdMockServer();
+        `,
+      }),
+    ],
+  };
+};
+```
+
+```
+
 ## Note
 
 - The node module cannot be used in the mock .ts file, otherwise the production environment will fail
@@ -256,3 +333,4 @@ MIT
 [npm-url]: https://npmjs.com/package/vite-plugin-mock
 [node-img]: https://img.shields.io/node/v/vite-plugin-mock.svg
 [node-url]: https://nodejs.org/en/about/releases/
+```

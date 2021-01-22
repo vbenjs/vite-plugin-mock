@@ -5,6 +5,9 @@ export interface ViteMockOptions {
   ignore?: RegExp | ((fileName: string) => boolean);
   watchFiles?: boolean;
   localEnabled?: boolean;
+  prodEnabled?: boolean;
+  injectFile?: string;
+  injectCode?: string;
   supportTs?: boolean;
   showTime?: boolean | string;
 }

@@ -1,17 +1,37 @@
-/*
- * @Description: For use in a production environment. Note that this time the file upload will fail
- */
 import Mock from 'mockjs';
-import { param2Obj } from './utils';
 
 export function createProdMockServer(mockList: any[]) {
+  // @ts-ignore
+  Mock.XHR.prototype.__send = Mock.XHR.prototype.send;
+  // @ts-ignore
+  Mock.XHR.prototype.send = function () {
+    if (this.custom.xhr) this.custom.xhr.withCredentials = this.withCredentials || false;
+    this.__send.apply(this, arguments);
+  };
+
   for (const { url, method, response, timeout } of mockList) {
-    setupMock(timeout);
-    Mock.mock(new RegExp(url), method || 'get', XHR2ExpressReqWrap(response, timeout));
+    __setupMock__(timeout);
+    Mock.mock(new RegExp(url), method || 'get', __XHR2ExpressReqWrapper__(response, timeout));
   }
 }
 
-function XHR2ExpressReqWrap(handle: (d: any) => any, timeout = 0) {
+function __param2Obj__(url: string) {
+  const search = url.split('?')[1];
+  if (!search) {
+    return {};
+  }
+  return JSON.parse(
+    '{"' +
+      decodeURIComponent(search)
+        .replace(/"/g, '\\"')
+        .replace(/&/g, '","')
+        .replace(/=/g, '":"')
+        .replace(/\+/g, ' ') +
+      '"}'
+  );
+}
+
+function __XHR2ExpressReqWrapper__(handle: (d: any) => any, timeout = 0) {
   return function (options: any) {
     let result = null;
     if (handle instanceof Function) {
@@ -19,7 +39,7 @@ function XHR2ExpressReqWrap(handle: (d: any) => any, timeout = 0) {
       result = handle({
         method: type,
         body: JSON.parse(body),
-        query: param2Obj(url),
+        query: __param2Obj__(url),
       });
     } else {
       result = handle;
@@ -28,10 +48,10 @@ function XHR2ExpressReqWrap(handle: (d: any) => any, timeout = 0) {
     return Mock.mock(result);
   };
 }
-function setupMock(timeout = 0) {
-  if (timeout) {
+
+function __setupMock__(timeout = 0) {
+  timeout &&
     Mock.setup({
       timeout,
     });
-  }
 }

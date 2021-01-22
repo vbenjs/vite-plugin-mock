@@ -83,6 +83,9 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
     localEnabled?: boolean;
     ignoreFiles?: string[];
     configPath?: string;
+    prodEnabled?: boolean;
+    injectFile?: string;
+    injectCode?: string;
 }
 ```
 
@@ -130,7 +133,35 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 **default:** command === 'serve'
 
-设置是否启用本地模拟.ts 文件，不要在生产环境中打开它
+设置是否启用本地 xxx.ts 文件，不要在生产环境中打开它.设置为 false 将禁用 mock 功能
+
+### prodEnabled
+
+**type:** boolean
+
+**default:** command !== 'serve'
+
+设置打包是否启用 mock 功能
+
+### injectCode
+
+**type:** string
+
+**default:** ''
+
+如果生产环境开启了 mock 功能,即`localEnabled=true`.则该代码会被注入到`injectFile`对应的文件的底部。默认为`main.ts`
+
+这样做的好处是,可以动态控制生产环境是否开启 mock 且在没有开启的时候 mock.js 不会被打包。
+
+如果代码直接写在`main.ts`内，则不管有没有开启,最终的打包都会包含`mock.js`
+
+### injectFile
+
+**type:** string
+
+**default:** `path.resolve(process.cwd(), 'src/main.ts')`
+
+`injectCode`代码注入的文件,默认为项目根目录下`src/main.ts`
 
 ### configPath
 
@@ -213,7 +244,7 @@ export default [
 
 ## 在生产环境中的使用
 
-### 示例
+### 示例一(2.0.0-rc1 已经不推荐)
 
 创建`mockProdServer.ts`文件
 
@@ -243,6 +274,56 @@ if (process.env.NODE_ENV === 'production') {
 }
 ```
 
+### 示例二(2.0.0-rc1+ 推荐)
+
+创建`mockProdServer.ts`文件
+
+```ts
+//  mockProdServer.ts
+
+import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
+
+// 逐一导入您的模拟.ts文件
+// 如果使用vite.mock.config.ts，只需直接导入文件
+import testModule from '../mock/test';
+
+export function setupProdMockServer() {
+  createProdMockServer([...testModule]);
+}
+```
+
+配置 `vite-plugin-mock`
+
+```ts
+import { viteMockServe } from 'vite-plugin-mock';
+
+import { UserConfigExport, ConfigEnv } from 'vite';
+
+export default ({ command }: ConfigEnv): UserConfigExport => {
+  // 根据项目配置。可以配置在.env文件
+  let prodMock = true;
+  return {
+    plugins: [
+      viteMockServe({
+        mockPath: 'mock',
+        localEnabled: command === 'serve',
+        prodEnabled: command !== 'serve' && prodMock,
+        injectCode: `
+          import { setupProdMockServer } from './mockProdServer';
+          setupProdMockServer();
+        `,
+      }),
+    ],
+  };
+};
+```
+
+```
+
+
+
+
+
 ## Note
 
 - 无法在 mock.ts 文件中使用节点模块，否则生产环境将失败
@@ -257,3 +338,4 @@ MIT
 [npm-url]: https://npmjs.com/package/vite-plugin-mock
 [node-img]: https://img.shields.io/node/v/vite-plugin-mock.svg
 [node-url]: https://nodejs.org/en/about/releases/
+```

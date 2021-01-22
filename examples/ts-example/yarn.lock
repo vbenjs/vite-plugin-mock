@@ -67,10 +67,10 @@
   dependencies:
     "@types/node" "*"
 
-"@vitejs/plugin-vue@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-1.0.3.tgz#2df3c22802f2d2142ae3bd8d3e93623df790446d"
-  integrity sha512-sOVHFS97zxuRLAMj10C9Vaiv3WeEwnhtee9V+yv/G/xoJTXPJIRct4Nj2unPtp5zAUoCL+iTVbIC6LnNmNE4Hw==
+"@vitejs/plugin-vue@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-1.1.0.tgz#8ae0b11388897b07259c9e5198c0e3fb5e4b37d9"
+  integrity sha512-ExlAt3nb3PB31jV9AgRZSMoGd+aQRU53fc/seghV8/l0JCzaX2mqlgpG8iytWkRxbBPgtAx4TpCPdiVKnTFT/A==
 
 "@vue/compiler-core@3.0.5":
   version "3.0.5"
@@ -333,7 +333,7 @@ content-type@~1.0.4:
   resolved "https://registry.npmjs.org/content-type/-/content-type-1.0.4.tgz#e138cc75e040c727b1966fe5e5f8c9aee256fe3b"
   integrity sha512-hIP3EEPs8tB9AT1L+NUqtwOAps4mk2Zob89MWXMHjHWg9milF/j4osnnQLXBCBFBk/tvIG/tUc9mOUJiPBhPXA==
 
-cross-env@^7.0.2:
+cross-env@^7.0.3:
   version "7.0.3"
   resolved "https://registry.npmjs.org/cross-env/-/cross-env-7.0.3.tgz#865264b29677dc015ba8418918965dd232fc54cf"
   integrity sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==
@@ -630,6 +630,11 @@ loader-utils@^1.1.0:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
     json5 "^1.0.1"
+
+lodash-es@^4.17.20:
+  version "4.17.20"
+  resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.20.tgz#29f6332eefc60e849f869c264bc71126ad61e8f7"
+  integrity sha512-JD1COMZsq8maT6mnuz1UMV0jvYD0E0aUsSOdrr1/nAG3dhqQXwRRgeW0cSqH1U43INKcqxaiVIQNOUDld7gRDA==
 
 lodash.camelcase@^4.3.0:
   version "4.3.0"
@@ -1011,10 +1016,10 @@ utils-merge@1.0.1:
   resolved "https://registry.npmjs.org/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-vite-plugin-mock@^2.0.0-beta.1:
-  version "2.0.0-beta.1"
-  resolved "https://registry.npmjs.org/vite-plugin-mock/-/vite-plugin-mock-2.0.0-beta.1.tgz#660c3b7867c84d20c82bf2e074e9b8377d2a9427"
-  integrity sha512-wnMAfVGXsYDlSWD4kV0xG9X6ZWir1UGsH4xeGzxbAU0XlkgQgJxxFJ1/j+QjD8bauKmuU9QUW1uAr9TWwzTShg==
+vite-plugin-mock@^2.0.0-beta.3:
+  version "2.0.0-beta.3"
+  resolved "https://registry.npmjs.org/vite-plugin-mock/-/vite-plugin-mock-2.0.0-beta.3.tgz#5276b86734106ccd7aaa299bfb0d16a86c8d2823"
+  integrity sha512-LfgXV3Mzulz89OfuXysxLpnyu66mDiFAeBjwx24N/OiEyZEHagbVRVOJU8Xz/oTmtH7EP/AyrYjQFRb2elQ0BQ==
   dependencies:
     "@rollup/plugin-node-resolve" "^11.0.1"
     body-parser "^1.19.0"
@@ -1028,13 +1033,14 @@ vite-plugin-mock@^2.0.0-beta.1:
     rollup "^2.35.1"
     rollup-plugin-esbuild "^2.6.1"
 
-vite@^2.0.0-beta.3:
-  version "2.0.0-beta.3"
-  resolved "https://registry.npmjs.org/vite/-/vite-2.0.0-beta.3.tgz#50b62a705749f1187d094b0f9a4dad9e1d7630a8"
-  integrity sha512-jY0H655nqpclHhk4gJJ6oINvX+REGzNqAOAaNbU3P2TDM6PxAWpXsvGjkC/DonkZtuV/m3q7UhACS/tm5hJ04A==
+vite@^2.0.0-beta.36:
+  version "2.0.0-beta.36"
+  resolved "https://registry.npmjs.org/vite/-/vite-2.0.0-beta.36.tgz#ccecac854ded0b7c0fe14c52c0460e1c23a9c70b"
+  integrity sha512-+Q/Twq1/tpNQIZl0HSFTqiEuP7lXj+6H/f9q63+s5I2K/sqgSUajL3PL7W9uUUIv9dYpJ1eLqkO42ppH9w9Ldw==
   dependencies:
     esbuild "^0.8.26"
     postcss "^8.2.1"
+    resolve "^1.19.0"
     rollup "^2.35.1"
   optionalDependencies:
     fsevents "~2.1.2"
