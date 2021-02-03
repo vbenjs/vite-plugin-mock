@@ -6,40 +6,26 @@
 
 提供本地和生产模拟服务。
 
-vite 的数据模拟插件，是基于 vite.js 开发的。 并同时支持本地环境和生产环境。 Connect 服务中间件在本地使用，mockjs 在线使用
+vite 的数据模拟插件，是基于 vite.js 开发的。 并同时支持本地环境和生产环境。 Connect 服务中间件在本地使用，mockjs 在生产环境中使用
 
 ### 安装 (yarn or npm)
 
 **node version:** >=12.0.0
 
-**vite version:** >=2.0.0-beta.4
+**vite version:** >=2.0.0-beta.64
 
-`yarn add mockjs` or `yarn add mockjs -S`
+```bash
+yarn add mockjs
+# or
+npm i  mockjs -S
+```
 
 and
 
-`yarn add vite-plugin-mock@next -D` or `npm i vite-plugin-mock@next -D`
-
-### 示例
-
-**运行示例**
-
 ```bash
-
-# ts example
-cd ./examples/ts-examples
-
-yarn install
-
-yarn serve
-
-# js example
-
-cd ./examples/js-examples
-
-yarn install
-
-yarn serve
+yarn add vite-plugin-mock -D
+# or
+npm i vite-plugin-mock -D
 ```
 
 ## 使用
@@ -203,40 +189,38 @@ export default [
       return {
         code: 0,
         data: {
-        	name: 'vben'
-        }
+          name: 'vben',
+        },
       };
     },
   },
-   {
+  {
     url: '/api/post',
     method: 'post',
-    timeout:2000,
+    timeout: 2000,
     response: {
-      	code: 0,
-       data: {
-        	name: 'vben'
-        }
-      };
+      code: 0,
+      data: {
+        name: 'vben',
+      },
+    },
   },
 ] as MockMethod[];
-
-
 ```
 
 ### MockMethod
 
 ```ts
 {
-  // request url
+  // 请求地址
   url: string;
-  // request method
+  // 请求方式
   method?: MethodType;
-  // Request time in milliseconds
+  // 设置超时时间
   timeout?: number;
-  // default: 200
+  // 状态吗
   statusCode?:number;
-  // response data
+  // 响应数据
   response: ((opt: { [key: string]: string; body: Record<string,any>; query:  Record<string,any> }) => any) | any;
 }
 
@@ -308,6 +292,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         mockPath: 'mock',
         localEnabled: command === 'serve',
         prodEnabled: command !== 'serve' && prodMock,
+        //  这样可以控制关闭mock的时候不让mock打包到最终代码内
         injectCode: `
           import { setupProdMockServer } from './mockProdServer';
           setupProdMockServer();
@@ -318,15 +303,36 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 };
 ```
 
+### 示例
+
+**运行示例**
+
+```bash
+
+# ts example
+cd ./examples/ts-examples
+
+yarn install
+
+yarn serve
+
+# js example
+
+cd ./examples/js-examples
+
+yarn install
+
+yarn serve
+```
+
 ## 示例项目
 
 [Vben Admin](https://github.com/anncwb/vue-vben-admin)
 
-## Note
+## 注意是想
 
-- 无法在 mock.ts 文件中使用节点模块，否则生产环境将失败
--
-- 模拟数据用于生产环境，仅适用于某些测试环境。 不要在正式环境中打开它，以避免不必要的错误。 同时，在生产环境中，它可能会影响正常的 Ajax 请求，例如文件上传失败等。
+- 无法在 mock.ts 文件中使用 node 模块，否则生产环境将失败
+- 模拟数据如果用于生产环境，仅适用于某些测试环境。 不要在正式环境中打开它，以避免不必要的错误。 同时，在生产环境中，它可能会影响正常的 Ajax 请求，例如文件上传失败等。
 
 ## License
 

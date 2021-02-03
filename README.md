@@ -12,13 +12,19 @@ A mock plugin for vite, developed based on mockjs. And support the local environ
 
 **node version:** >=12.0.0
 
-**vite version:** >=2.0.0-beta.36
+**vite version:** >=2.0.0-beta.64
 
-`yarn add mockjs` or `yarn add mockjs -S`
+```bash
+yarn add mockjs
+# or
+npm i  mockjs -S
+```
 
-and
-
-`yarn add vite-plugin-mock@next -D` or `npm i vite-plugin-mock@next -D`
+```bash
+yarn add vite-plugin-mock -D
+# or
+npm i vite-plugin-mock -D
+```
 
 ### Example
 
@@ -203,25 +209,23 @@ export default [
       return {
         code: 0,
         data: {
-        	name: 'vben'
-        }
+          name: 'vben',
+        },
       };
     },
   },
-   {
+  {
     url: '/api/post',
     method: 'post',
-    timeout:2000,
+    timeout: 2000,
     response: {
-      	code: 0,
-       data: {
-        	name: 'vben'
-        }
-      };
+      code: 0,
+      data: {
+        name: 'vben',
+      },
+    },
   },
 ] as MockMethod[];
-
-
 ```
 
 ### MockMethod

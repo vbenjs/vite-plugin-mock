@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "esnext",
-    "outDir": "es"
+    "module": "esnext"
   },
   "include": ["./src/createProdMockServer.ts"],
   "exclude": []
