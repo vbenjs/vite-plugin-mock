@@ -18,7 +18,7 @@ vite 的数据模拟插件，是基于 vite.js 开发的。 并同时支持本�
 
 and
 
-`yarn add vite-plugin-mock@next -D` or `npm i vite-plugin-mock@next -D`
+`yarn add vite-plugin-mock -D` or `npm i vite-plugin-mock -D`
 
 ### 示例
 

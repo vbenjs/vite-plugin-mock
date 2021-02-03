@@ -18,7 +18,7 @@ A mock plugin for vite, developed based on mockjs. And support the local environ
 
 and
 
-`yarn add vite-plugin-mock@next -D` or `npm i vite-plugin-mock@next -D`
+`yarn add vite-plugin-mock -D` or `npm i vite-plugin-mock -D`
 
 ### Example
 
