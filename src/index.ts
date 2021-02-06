@@ -13,13 +13,17 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
   let isDev = false;
 
   let config: ResolvedConfig;
+
+  let needSourcemap = false;
   return {
     name: 'vite:mock',
     enforce: 'pre',
     configResolved(resolvedConfig) {
       config = resolvedConfig;
       isDev = config.command === 'serve' && !config.isProduction;
+      needSourcemap = resolvedConfig.isProduction && !!resolvedConfig.build.sourcemap;
     },
+
     configureServer: ({ middlewares }) => {
       const { localEnabled = isDev } = opt;
       if (!localEnabled) return;
@@ -30,16 +34,30 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
       middlewares.use(bodyParser.json());
       middlewares.use(requestMiddle(opt));
     },
-
     async transform(code: string, id: string) {
-      if (isDev || !id.endsWith(injectFile)) return code;
+      const getMap = () => (needSourcemap ? this.getCombinedSourcemap() : null);
+
+      if (isDev || !id.endsWith(injectFile)) {
+        return {
+          code,
+          map: getMap(),
+        };
+      }
       const { prodEnabled = true, injectCode = '' } = opt;
-      if (!prodEnabled) return;
-      return `
+      if (!prodEnabled) {
+        return {
+          code,
+          map: getMap(),
+        };
+      }
+      return {
+        code: `
       ${code}
       \n
       ${injectCode}
-      `;
+      `,
+        map: getMap(),
+      };
     },
   };
 }
