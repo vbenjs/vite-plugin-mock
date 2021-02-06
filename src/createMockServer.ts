@@ -19,11 +19,12 @@ import { rollup } from 'rollup';
 import esbuildPlugin from 'rollup-plugin-esbuild';
 import dayjs from 'dayjs';
 
-import { NextHandleFunction } from 'connect';
+import createServer, { NextHandleFunction } from 'connect';
+import { Connect } from 'vite';
 
 const pathResolve = require('@rollup/plugin-node-resolve');
 
-let mockData: MockMethod[] = [];
+export let mockData: MockMethod[] = [];
 
 export async function createMockServer(
   opt: ViteMockOptions = { mockPath: 'mock', ignoreFiles: [], configPath: 'vite.mock.config' }
@@ -62,7 +63,7 @@ function getInvokeTime(opt: ViteMockOptions): string {
 
 // request match
 // @ts-ignore
-export function requestMiddle(opt: ViteMockOptions) {
+export async function requestMiddle(opt: ViteMockOptions) {
   const middleware: NextHandleFunction = async (req, res, next) => {
     let queryParams: {
       query?: {
@@ -90,7 +91,7 @@ export function requestMiddle(opt: ViteMockOptions) {
       }
       const { query = {} } = queryParams;
 
-      const body = (req as any).body;
+      const body = (await parseJson(req)) as Record<string, any>;
       const mockRes = isFunction(response) ? response({ body, query }) : response;
       console.log(
         `${chalk.green(
@@ -139,6 +140,25 @@ function cleanRequireCache(opt: ViteMockOptions) {
     if (file === absConfigPath || file.indexOf(absMockPath) > -1) {
       delete require.cache[file];
     }
+  });
+}
+
+function parseJson(req: createServer.IncomingMessage) {
+  return new Promise((resolve) => {
+    let body = '';
+    let jsonStr = '';
+    req.on('data', function (chunk) {
+      body += chunk;
+    });
+    req.on('end', function () {
+      try {
+        jsonStr = JSON.parse(body);
+      } catch (err) {
+        jsonStr = '';
+      }
+      resolve(jsonStr);
+      return;
+    });
   });
 }
 

@@ -1,7 +1,6 @@
 import { ViteMockOptions } from './types';
 import { Plugin, ResolvedConfig, normalizePath } from 'vite';
 import { createMockServer, requestMiddle } from './createMockServer';
-import bodyParser from 'body-parser';
 import path from 'path';
 
 export function viteMockServe(opt: ViteMockOptions): Plugin {
@@ -24,15 +23,17 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
       needSourcemap = resolvedConfig.isProduction && !!resolvedConfig.build.sourcemap;
     },
 
-    configureServer: ({ middlewares }) => {
+    configureServer: async ({ middlewares }) => {
       const { localEnabled = isDev } = opt;
       if (!localEnabled) return;
       createMockServer(opt);
+
       // parse application/x-www-form-urlencoded
-      middlewares.use(bodyParser.urlencoded({ extended: false }));
+      // middlewares.use(bodyParser.urlencoded({ extended: false }));
       // parse application/json
-      middlewares.use(bodyParser.json());
-      middlewares.use(requestMiddle(opt));
+      // middlewares.use(bodyParser.json());
+      const middleware = await requestMiddle(opt);
+      middlewares.use(middleware);
     },
     async transform(code: string, id: string) {
       const getMap = () => (needSourcemap ? this.getCombinedSourcemap() : null);
