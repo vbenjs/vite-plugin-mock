@@ -20,7 +20,9 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
     configResolved(resolvedConfig) {
       config = resolvedConfig;
       isDev = config.command === 'serve' && !config.isProduction;
-      needSourcemap = resolvedConfig.isProduction && !!resolvedConfig.build.sourcemap;
+      needSourcemap =
+        resolvedConfig.command === 'serve' ||
+        (resolvedConfig.isProduction && !!resolvedConfig.build.sourcemap);
     },
 
     configureServer: async ({ middlewares }) => {
@@ -28,37 +30,27 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
       if (!localEnabled) return;
       createMockServer(opt);
 
-      // parse application/x-www-form-urlencoded
-      // middlewares.use(bodyParser.urlencoded({ extended: false }));
-      // parse application/json
-      // middlewares.use(bodyParser.json());
       const middleware = await requestMiddle(opt);
       middlewares.use(middleware);
     },
     async transform(code: string, id: string) {
-      const getMap = () => (needSourcemap ? this.getCombinedSourcemap() : null);
+      const getResult = (content: string) => ({
+        map: needSourcemap ? this.getCombinedSourcemap() : null,
+        code: content,
+      });
 
       if (isDev || !id.endsWith(injectFile)) {
-        return {
-          code,
-          map: getMap(),
-        };
+        return getResult(code);
       }
       const { prodEnabled = true, injectCode = '' } = opt;
       if (!prodEnabled) {
-        return {
-          code,
-          map: getMap(),
-        };
+        return getResult(code);
       }
-      return {
-        code: `
+      return getResult(`
       ${code}
       \n
       ${injectCode}
-      `,
-        map: getMap(),
-      };
+      `);
     },
   };
 }
