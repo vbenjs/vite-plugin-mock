@@ -1,3 +1,11 @@
+(async () => {
+  try {
+    await import('mockjs');
+  } catch (e) {
+    throw new Error('vite-plugin-vue-mock requires mockjs to be present in the dependency tree.');
+  }
+})();
+
 import { ViteMockOptions } from './types';
 import { Plugin, ResolvedConfig, normalizePath } from 'vite';
 import { createMockServer, requestMiddle } from './createMockServer';
@@ -20,9 +28,7 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
     configResolved(resolvedConfig) {
       config = resolvedConfig;
       isDev = config.command === 'serve' && !config.isProduction;
-      needSourcemap =
-        resolvedConfig.command === 'serve' ||
-        (resolvedConfig.isProduction && !!resolvedConfig.build.sourcemap);
+      needSourcemap = resolvedConfig.isProduction && !!resolvedConfig.build.sourcemap;
     },
 
     configureServer: async ({ middlewares }) => {
@@ -34,23 +40,18 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
       middlewares.use(middleware);
     },
     async transform(code: string, id: string) {
-      const getResult = (content: string) => ({
-        map: needSourcemap ? this.getCombinedSourcemap() : null,
-        code: content,
-      });
-
       if (isDev || !id.endsWith(injectFile)) {
-        return getResult(code);
+        return null;
       }
       const { prodEnabled = true, injectCode = '' } = opt;
       if (!prodEnabled) {
-        return getResult(code);
+        return null;
       }
-      return getResult(`
-      ${code}
-      \n
-      ${injectCode}
-      `);
+
+      return {
+        map: needSourcemap ? this.getCombinedSourcemap() : null,
+        code: `${code}\n${injectCode}`,
+      };
     },
   };
 }

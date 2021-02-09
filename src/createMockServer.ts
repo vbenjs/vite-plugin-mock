@@ -20,7 +20,6 @@ import esbuildPlugin from 'rollup-plugin-esbuild';
 import dayjs from 'dayjs';
 
 import createServer, { NextHandleFunction } from 'connect';
-import { Connect } from 'vite';
 
 const pathResolve = require('@rollup/plugin-node-resolve');
 
