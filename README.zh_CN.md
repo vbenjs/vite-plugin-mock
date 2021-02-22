@@ -12,7 +12,7 @@ vite 的数据模拟插件，是基于 vite.js 开发的。 并同时支持本�
 
 **node version:** >=12.0.0
 
-**vite version:** >=2.0.0-beta.64
+**vite version:** >=2.0.0
 
 ```bash
 yarn add mockjs

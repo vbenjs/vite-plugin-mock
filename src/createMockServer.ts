@@ -93,9 +93,10 @@ export async function requestMiddle(opt: ViteMockOptions) {
       const body = (await parseJson(req)) as Record<string, any>;
       const mockRes = isFunction(response) ? response({ body, query }) : response;
       console.log(
-        `${chalk.green(
-          `[vite:mock-server${getInvokeTime(opt)}]:request invoke: ` + ` ${chalk.cyan(req.url)} `
-        )}`
+        `${chalk.cyan(`[vite:mock-server]`)}` +
+          `${chalk.dim(':request invoke:')}` +
+          ` ${chalk.green(req.url)}` +
+          `${chalk.dim(getInvokeTime(opt))}`
       );
       res.setHeader('Content-Type', 'application/json');
 
@@ -125,7 +126,12 @@ function createWatch(opt: ViteMockOptions) {
 
   const watch = () => {
     watcher.on('all', async (event, file) => {
-      console.log(chalk.magentaBright(`[vite:mock-server]:mock file ${event}.`));
+      console.log(
+        `${chalk.cyan(`[vite:mock-server]`)}` +
+          `${chalk.dim(` - mock file ${event}: `)}` +
+          `${chalk.dim(`[${file}]`)}` +
+          `${chalk.dim(getInvokeTime(opt))}`
+      );
       mockData = await getMockConfig(opt);
     });
   };
@@ -168,7 +174,12 @@ async function getMockConfig(opt: ViteMockOptions) {
   const { ignoreFiles = [], ignore, configPath, supportTs } = opt;
   let ret: any[] = [];
   if (configPath && existsSync(absConfigPath)) {
-    console.log(chalk.blue(`[vite:mock-server]:load mock data from ${absConfigPath}`));
+    console.log(
+      `${chalk.cyan(`[vite:mock-server]`)}` +
+        `${chalk.dim(` - load mock data from: `)}` +
+        `${chalk.dim(`[${absConfigPath}]`)}` +
+        `${chalk.dim(getInvokeTime(opt))}`
+    );
     let resultModule = await resolveModule(absConfigPath);
     ret = resultModule;
   } else {
@@ -202,7 +213,12 @@ async function getMockConfig(opt: ViteMockOptions) {
         ret = [...ret, ...mod];
       }
     } catch (error) {
-      console.log(`${chalk.red('[vite:mock-server]:mock reload error!')}\n${error}`);
+      console.log(
+        `${chalk.cyan(`[vite:mock-server]`)}` +
+          `${chalk.red(` - mock reload error: `)}` +
+          `${chalk.red(`[${error}]`)}` +
+          `${chalk.dim(getInvokeTime(opt))}`
+      );
       ret = [];
     }
   }
