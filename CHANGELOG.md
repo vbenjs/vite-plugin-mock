@@ -1,3 +1,24 @@
+## [2.1.5](https://github.com/anncwb/vite-plugin-mock/compare/v2.0.0-beta.1...v2.1.5) (2021-02-23)
+
+
+### Bug Fixes
+
+* correct sourcemap ([2140987](https://github.com/anncwb/vite-plugin-mock/commit/21409876876b845b18b5b006e98292138870a922))
+* dev sourcemap ([5834b4f](https://github.com/anncwb/vite-plugin-mock/commit/5834b4f621b25371a7b0246a48fb83b9761afeed))
+* fix post proxy error ([d3ae41e](https://github.com/anncwb/vite-plugin-mock/commit/d3ae41e18a5e7adae504457165ba7b34b8ebff6f))
+
+
+### Features
+
+* support sourcemap ([8c3cd9d](https://github.com/anncwb/vite-plugin-mock/commit/8c3cd9d78a9bd7f87dc7900e9bfe6c753ff3b11f))
+
+
+### Performance Improvements
+
+* imporve request log ([f9353fd](https://github.com/anncwb/vite-plugin-mock/commit/f9353fdf8149665f984729ab3c7a6749022cfdaf))
+
+
+
 # [2.0.0-beta.1](https://github.com/anncwb/vite-plugin-mock/compare/2.0.0-beta.1...v2.0.0-beta.1) (2021-01-03)
 
 ### Bug Fixes
