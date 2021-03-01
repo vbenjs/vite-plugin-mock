@@ -1,3 +1,12 @@
+# [2.2.0](https://github.com/anncwb/vite-plugin-mock/compare/v2.1.5...v2.2.0) (2021-03-02)
+
+
+### Features
+
+* add logger option ([66a75ab](https://github.com/anncwb/vite-plugin-mock/commit/66a75ab0ee5a7c8e03987e74f15b50aedd1cc29f))
+
+
+
 ## [2.1.5](https://github.com/anncwb/vite-plugin-mock/compare/v2.0.0-beta.1...v2.1.5) (2021-02-23)
 
 
