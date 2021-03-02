@@ -8,6 +8,7 @@ export interface ViteMockOptions {
   injectFile?: string;
   injectCode?: string;
   supportTs?: boolean;
+  logger?: boolean;
 }
 
 export type MethodType = 'get' | 'post' | 'put' | 'delete' | 'patch';

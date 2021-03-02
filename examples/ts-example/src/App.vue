@@ -1,8 +1,12 @@
 <template>
-  <button :style="{ width: '300px' }" @click="getRoleById"> getRoleById </button>
-  <br />
+  <div>
+    <button :style="{ width: '300px' }" @click="getRoleById"> test get </button>
+    <br />
+    <button @click="createUser"> test post</button>
 
-  <button @click="createUser"> createUser</button>
+    <br />
+    <button @click="testPostFormData"> test post form-data</button>
+  </div>
 </template>
 
 <script>
@@ -26,9 +30,26 @@
             console.log(res);
           });
       };
+
+      const testPostFormData = () => {
+        axios
+          .post(
+            '/api/createUser',
+            {
+              name: 'vben',
+              gender: 'man',
+            },
+            { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+          )
+          .then((res) => {
+            console.log(res);
+          });
+      };
+
       return {
         getRoleById,
         createUser,
+        testPostFormData,
       };
     },
   });

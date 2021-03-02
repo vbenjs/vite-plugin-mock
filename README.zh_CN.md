@@ -75,13 +75,11 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 }
 ```
 
-## 配置说明
-
 ### mockPath
 
 **type:** string
 
-**default:** 'mock'
+**default:** `mock`
 
 设置模拟.ts 文件的存储文件夹
 
@@ -93,45 +91,45 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 **type:** boolean
 
-**default:** true
+**default:** `true`
 
 打开后，可以读取 ts 文件模块。 请注意，打开后将无法监视.js 文件。
 
 ### ignore
 
-**type:** RegExp | ((fileName: string) => boolean);
+**type:** `RegExp | ((fileName: string) => boolean)`;
 
-**default:** undefined
+**default:** `undefined`
 
 自动读取模拟.ts 文件时，请忽略指定格式的文件
 
 ### watchFiles
 
-**type:** boolean
+**type:** `boolean`
 
-**default:** true
+**default:** `true`
 
-设置是否监视模拟.ts 文件中的更改
+设置是否监视`mockPath`对应的文件夹内文件中的更改
 
 ### localEnabled
 
-**type:** boolean
+**type:** `boolean`
 
-**default:** command === 'serve'
+**default:** `command === 'serve'`
 
-设置是否启用本地 xxx.ts 文件，不要在生产环境中打开它.设置为 false 将禁用 mock 功能
+设置是否启用本地` xxx.ts` 文件，不要在生产环境中打开它.设置为 `false` 将禁用 mock 功能
 
 ### prodEnabled
 
-**type:** boolean
+**type:** `boolean`
 
-**default:** command !== 'serve'
+**default:** `command !== 'serve'`
 
 设置打包是否启用 mock 功能
 
 ### injectCode
 
-**type:** string
+**type:** `string`
 
 **default:** ''
 
@@ -143,7 +141,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 ### injectFile
 
-**type:** string
+**type:** `string`
 
 **default:** `path.resolve(process.cwd(), 'src/main.ts')`
 
@@ -151,19 +149,19 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 ### configPath
 
-**type:** string
+**type:** `string`
 
-**default:** vite.mock.config.ts
+**default:** `vite.mock.config.ts`
 
 设置模拟读取的数据条目。 当文件存在并且位于项目根目录中时，将首先读取并使用该文件。 配置文件返回一个数组
 
-### ignoreFiles
+### logger
 
-**type:** string[]
+**type:** `boolean`
 
-**default:** []
+**default:** `true`
 
-该项目使用 glob 来读取模拟路径设置的文件夹。 此参数用作 glob 模块的参数
+是否在控制台显示请求日志
 
 ## Mock file example
 
@@ -220,16 +218,14 @@ export default [
 
 ## 在生产环境中的使用
 
-### 示例(2.0.0- 推荐)
-
-创建`mockProdServer.ts`文件
+创建`mockProdServer.ts` 文件
 
 ```ts
 //  mockProdServer.ts
 
 import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
 
-// 逐一导入您的模拟.ts文件
+// 逐一导入您的mock.ts文件
 // 如果使用vite.mock.config.ts，只需直接导入文件
 import testModule from '../mock/test';
 
@@ -294,7 +290,7 @@ yarn serve
 ## 注意是想
 
 - 无法在 mock.ts 文件中使用 node 模块，否则生产环境将失败
-- 模拟数据如果用于生产环境，仅适用于某些测试环境。 不要在正式环境中打开它，以避免不必要的错误。 同时，在生产环境中，它可能会影响正常的 Ajax 请求，例如文件上传失败等。
+- 模拟数据如果用于生产环境，仅适用于某些测试环境。 不要在正式环境中打开它，以避免不必要的错误。 同时，在生产环境中，它可能会影响正常的 Ajax 请求，例如文件上传/下载失败等。
 
 ## License
 

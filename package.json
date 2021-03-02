@@ -47,6 +47,7 @@
     "vite": ">=2.0.0"
   },
   "devDependencies": {
+    "@types/connect": "^3.4.34",
     "@types/debug": "^4.1.5",
     "@types/node": "^14.14.31",
     "conventional-changelog-cli": "^2.1.1",

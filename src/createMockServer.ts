@@ -26,6 +26,7 @@ export async function createMockServer(
     watchFiles: true,
     supportTs: true,
     configPath: 'vite.mock.config.ts',
+    logger: true,
     ...opt,
   };
   if (mockData.length > 0) return;
@@ -41,6 +42,7 @@ export async function createMockServer(
 // request match
 // @ts-ignore
 export async function requestMiddle(opt: ViteMockOptions) {
+  const { logger = true } = opt;
   const middleware: NextHandleFunction = async (req, res, next) => {
     let queryParams: {
       query?: {
@@ -69,7 +71,7 @@ export async function requestMiddle(opt: ViteMockOptions) {
 
       const body = (await parseJson(req)) as Record<string, any>;
       const mockRes = isFunction(response) ? response({ body, query }) : response;
-      loggerOutput('request invoke', req.url!);
+      logger && loggerOutput('request invoke', req.url!);
       res.setHeader('Content-Type', 'application/json');
 
       res.statusCode = statusCode || 200;
@@ -84,7 +86,7 @@ export async function requestMiddle(opt: ViteMockOptions) {
 
 // create watch mock
 function createWatch(opt: ViteMockOptions) {
-  const { configPath } = opt;
+  const { configPath, logger } = opt;
   const { absConfigPath, absMockPath } = getPath(opt);
   if (process.env.VITE_DISABLED_WATCH_MOCK === 'true') return;
 
@@ -99,7 +101,7 @@ function createWatch(opt: ViteMockOptions) {
 
   const watch = () => {
     watcher.on('all', async (event, file) => {
-      loggerOutput(`mock file ${event}`, file);
+      logger && loggerOutput(`mock file ${event}`, file);
 
       mockData = await getMockConfig(opt);
     });
@@ -140,10 +142,10 @@ function parseJson(req: createServer.IncomingMessage) {
 async function getMockConfig(opt: ViteMockOptions) {
   cleanRequireCache(opt);
   const { absConfigPath, absMockPath } = getPath(opt);
-  const { ignore, configPath, supportTs } = opt;
+  const { ignore, configPath, supportTs, logger } = opt;
   let ret: any[] = [];
   if (configPath && existsSync(absConfigPath)) {
-    loggerOutput(`load mock data from`, absConfigPath);
+    logger && loggerOutput(`load mock data from`, absConfigPath);
     let resultModule = await resolveModule(absConfigPath);
     ret = resultModule;
   } else {

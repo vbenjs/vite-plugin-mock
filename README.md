@@ -95,13 +95,13 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 }
 ```
 
-## Option description
+## Options
 
 ### mockPath
 
-**type:** string
+**type:** `string`
 
-**default:** 'mock'
+**default:** `'mock'`
 
 Set the folder where the mock .ts file is stored
 
@@ -111,47 +111,47 @@ If configPath has a value, it is invalid
 
 ### supportTs
 
-**type:** boolean
+**type:** `boolean`
 
-**default:** true
+**default:** `true`
 
 After opening, the ts file module can be read. Note that you will not be able to monitor .js files after opening.
 
 ### ignore
 
-**type:** RegExp | ((fileName: string) => boolean);
+**type:** `RegExp | ((fileName: string) => boolean);`
 
-**default:** undefined
+**default:** `undefined`
 
 When automatically reading analog .ts files, ignore files in the specified format
 
 ### watchFiles
 
-**type:** boolean
+**type:** `boolean`
 
-**default:** true
+**default:** `true`
 
 Set whether to monitor changes in mock .ts files
 
 ### localEnabled
 
-**type:** boolean
+**type:** `boolean`
 
-**default:** command === 'serve'
+**default:** `command === 'serve'`
 
 Set whether to enable the local mock .ts file, do not open it in the production environment
 
 ### prodEnabled
 
-**type:** boolean
+**type:** `boolean`
 
-**default:** command !=='serve'
+**default:** `command !=='serve'`
 
 Set whether to enable mock function for packaging
 
 ### injectCode
 
-**type:** string
+**type:** `string`
 
 **default:**''
 
@@ -163,7 +163,7 @@ If the code is written directly in `main.ts`, no matter whether it is turned on 
 
 ### injectFile
 
-**type:** string
+**type:** `string`
 
 **default:** `path.resolve(process.cwd(),'src/main.ts')`
 
@@ -171,27 +171,19 @@ The file injected by `injectCode` code, the default is `src/main.ts` in the proj
 
 ### configPath
 
-**type:** string
+**type:** `string`
 
-**default:** vite.mock.config.ts
+**default:** `vite.mock.config.ts`
 
 Set the data entry that the mock reads. When the file exists and is located in the project root directory, the file will be read and used first. The configuration file returns an array
 
-### ignoreFiles
+### logger
 
-**type:** string[]
+**type:** `boolean`
 
-**default:** []
+**default:** `true`
 
-The project uses glob to read the folder set by mockPath. This parameter is used as the parameter of the glob module
-
-### showTime
-
-**type** boolean|string
-
-**default** `YYYY-MM-DD HH:mm:ss`
-
-Whether to display the request time. If it is a string, use dayjs to format
+Whether to display the request log on the console
 
 ## Mock file example
 

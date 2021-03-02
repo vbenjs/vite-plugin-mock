@@ -16,7 +16,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
           import { setupProdMockServer } from './mockProdServer';
           setupProdMockServer();
         `,
-        showTime: true,
+        logger: true,
       }),
     ],
   };
