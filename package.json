@@ -33,11 +33,9 @@
   "dependencies": {
     "@rollup/plugin-node-resolve": "^11.2.0",
     "@types/mockjs": "^1.0.3",
-    "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
     "chokidar": "^3.5.1",
     "connect": "^3.7.0",
-    "dayjs": "^1.10.4",
     "debug": "^4.3.2",
     "esbuild": "^0.8.54",
     "fast-glob": "^3.2.5",
@@ -49,7 +47,6 @@
     "vite": ">=2.0.0"
   },
   "devDependencies": {
-    "@types/body-parser": "^1.19.0",
     "@types/debug": "^4.1.5",
     "@types/node": "^14.14.31",
     "conventional-changelog-cli": "^2.1.1",

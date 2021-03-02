@@ -165,14 +165,6 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 该项目使用 glob 来读取模拟路径设置的文件夹。 此参数用作 glob 模块的参数
 
-### showTime
-
-**type** boolean|string
-
-**default** `YYYY-MM-DD HH:mm:ss`
-
-是否显示请求时间。 如果是字符串，使用 dayjs 格式化
-
 ## Mock file example
 
 `/path/mock`

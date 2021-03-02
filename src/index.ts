@@ -6,8 +6,9 @@
   }
 })();
 
-import { ViteMockOptions } from './types';
-import { Plugin, ResolvedConfig, normalizePath } from 'vite';
+import type { ViteMockOptions } from './types';
+import type { Plugin } from 'vite';
+import { ResolvedConfig, normalizePath } from 'vite';
 import { createMockServer, requestMiddle } from './createMockServer';
 import path from 'path';
 
@@ -22,6 +23,7 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
   let config: ResolvedConfig;
 
   let needSourcemap = false;
+
   return {
     name: 'vite:mock',
     enforce: 'pre',

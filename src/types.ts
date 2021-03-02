@@ -1,7 +1,6 @@
 export interface ViteMockOptions {
   mockPath?: string;
   configPath?: string;
-  ignoreFiles?: string[];
   ignore?: RegExp | ((fileName: string) => boolean);
   watchFiles?: boolean;
   localEnabled?: boolean;
@@ -9,7 +8,6 @@ export interface ViteMockOptions {
   injectFile?: string;
   injectCode?: string;
   supportTs?: boolean;
-  showTime?: boolean | string;
 }
 
 export type MethodType = 'get' | 'post' | 'put' | 'delete' | 'patch';
