@@ -228,37 +228,7 @@ export default [
 
 ## 在生产环境中的使用
 
-### 示例一(2.0.0-rc1 已经不推荐)
-
-创建`mockProdServer.ts`文件
-
-```ts
-//  mockProdServer.ts
-
-import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
-
-// 逐一导入您的模拟.ts文件
-// 如果使用vite.mock.config.ts，只需直接导入文件
-import testModule from '../mock/test';
-
-export function setupProdMockServer() {
-  createProdMockServer([...testModule]);
-}
-```
-
-In mian.ts
-
-```ts
-// src/main.ts
-
-import { setupProdMockServer } from './mockProdServer';
-
-if (process.env.NODE_ENV === 'production') {
-  setupProdMockServer();
-}
-```
-
-### 示例二(2.0.0-rc1+ 推荐)
+### 示例(2.0.0- 推荐)
 
 创建`mockProdServer.ts`文件
 

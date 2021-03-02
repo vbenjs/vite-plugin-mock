@@ -12,7 +12,7 @@ A mock plugin for vite, developed based on mockjs. And support the local environ
 
 **node version:** >=12.0.0
 
-**vite version:** >=2.0.0-beta.64
+**vite version:** >=2.0.0
 
 ```bash
 yarn add mockjs
@@ -246,39 +246,7 @@ export default [
 
 ```
 
-## Usage in Production environment
-
-### Example 1 (2.0.0-rc1 is no longer recommended)
-
-Create a new mockProdServer.ts file
-
-```ts
-//  mockProdServer.ts
-
-import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
-
-// Import your mock .ts files one by one
-// If you use vite.mock.config.ts, just import the file directly
-import testModule from '../mock/test';
-
-export function setupProdMockServer() {
-  createProdMockServer([...testModule]);
-}
-```
-
-In mian.ts
-
-```ts
-// src/main.ts
-
-import { setupProdMockServer } from './mockProdServer';
-
-if (process.env.NODE_ENV === 'production') {
-  setupProdMockServer();
-}
-```
-
-### Example 2 (2.0.0-rc1+ recommended)
+### Example (2.0.0 recommended)
 
 Create the `mockProdServer.ts` file
 
@@ -296,7 +264,7 @@ export function setupProdMockServer() {
 }
 ```
 
-配置 `vite-plugin-mock`
+Config `vite-plugin-mock`
 
 ```ts
 import { viteMockServe } from 'vite-plugin-mock';

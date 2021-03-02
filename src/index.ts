@@ -43,6 +43,7 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
       if (isDev || !id.endsWith(injectFile)) {
         return null;
       }
+
       const { prodEnabled = true, injectCode = '' } = opt;
       if (!prodEnabled) {
         return null;
