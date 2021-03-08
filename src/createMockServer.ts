@@ -72,9 +72,8 @@ export async function requestMiddle(opt: ViteMockOptions) {
       const urlMatch = match(url, { decode: decodeURIComponent });
 
       let query = queryParams.query;
-
-      if (reqUrl) {
-        query = (urlMatch(reqUrl) as any).params;
+      if (reqUrl && JSON.stringify(query) == '{}') {
+        query = (urlMatch(reqUrl) as any).params || {};
       }
 
       const body = (await parseJson(req)) as Record<string, any>;
