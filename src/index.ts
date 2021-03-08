@@ -41,6 +41,7 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
       const middleware = await requestMiddle(opt);
       middlewares.use(middleware);
     },
+
     async transform(code: string, id: string) {
       if (isDev || !id.endsWith(injectFile)) {
         return null;

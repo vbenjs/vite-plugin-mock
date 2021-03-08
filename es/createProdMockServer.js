@@ -1,22 +1,18 @@
 import Mock from 'mockjs';
-
-export function createProdMockServer(mockList: any[]) {
+export function createProdMockServer(mockList) {
   // @ts-ignore
   Mock.XHR.prototype.__send = Mock.XHR.prototype.send;
   // @ts-ignore
   Mock.XHR.prototype.send = function () {
     if (this.custom.xhr) this.custom.xhr.withCredentials = this.withCredentials || false;
-    // eslint-disable-next-line
     this.__send.apply(this, arguments);
   };
-
   for (const { url, method, response, timeout } of mockList) {
     __setupMock__(timeout);
     Mock.mock(new RegExp(url), method || 'get', __XHR2ExpressReqWrapper__(response, timeout));
   }
 }
-
-function __param2Obj__(url: string) {
+function __param2Obj__(url) {
   const search = url.split('?')[1];
   if (!search) {
     return {};
@@ -31,9 +27,8 @@ function __param2Obj__(url: string) {
       '"}'
   );
 }
-
-function __XHR2ExpressReqWrapper__(handle: (d: any) => any, timeout = 0) {
-  return function (options: any) {
+function __XHR2ExpressReqWrapper__(handle, timeout = 0) {
+  return function (options) {
     let result = null;
     if (handle instanceof Function) {
       const { body, type, url } = options;
@@ -45,11 +40,9 @@ function __XHR2ExpressReqWrapper__(handle: (d: any) => any, timeout = 0) {
     } else {
       result = handle;
     }
-
     return Mock.mock(result);
   };
 }
-
 function __setupMock__(timeout = 0) {
   timeout &&
     Mock.setup({

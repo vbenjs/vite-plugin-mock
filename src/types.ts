@@ -18,7 +18,7 @@ export declare interface MockMethod {
   method?: MethodType;
   timeout?: number;
   statusCode?: number;
-  response: ((opt: { body: Record<string, any>; query: Record<string, any> }) => any) | object;
+  response: ((opt: { body: Record<string, any>; query: Record<string, any> }) => any) | any;
 }
 
 export interface NodeModuleWithCompile extends NodeModule {

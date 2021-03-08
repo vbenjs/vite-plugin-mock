@@ -12,8 +12,16 @@
     "dev": " tsup src/index.ts --dts --format cjs,esm --watch",
     "dev:client": "tsc -w --p tsconfig.es.json",
     "build": "npm run clean  && tsup src/index.ts --dts --format cjs,esm && tsc -p tsconfig.es.json",
-    "prepublishOnly": "yarn build",
-    "log": "conventional-changelog -p angular -i CHANGELOG.md -s"
+    "log": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "prepublishOnly": "pinst --disable && npm run build",
+    "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js",
+    "lint:pretty": "pretty-quick --staged",
+    "lint:eslint": "eslint \"src/**/*.{ts,tsx}\" --fix",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "install:husky": "is-ci || husky install",
+    "postinstall": "npm run install:husky",
+    "postpublish": "pinst --enable"
   },
   "keywords": [
     "vite",
@@ -37,24 +45,41 @@
     "chokidar": "^3.5.1",
     "connect": "^3.7.0",
     "debug": "^4.3.2",
-    "esbuild": "^0.8.54",
+    "esbuild": "^0.8.57",
     "fast-glob": "^3.2.5",
     "rollup": "^2.40.0",
-    "rollup-plugin-esbuild": "^2.6.1"
+    "rollup-plugin-esbuild": "^2.6.1",
+    "path-to-regexp": "^6.2.0"
   },
   "peerDependencies": {
     "mockjs": ">=1.1.0",
     "vite": ">=2.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^12.0.1",
+    "@commitlint/config-conventional": "^12.0.1",
+    "@types/jest": "^26.0.20",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
+    "commitizen": "^4.2.3",
+    "eslint": "^7.21.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-jest": "^24.1.5",
+    "husky": "^5.1.3",
+    "jest": "^26.6.3",
+    "lint-staged": "^10.5.4",
+    "pinst": "^2.1.6",
+    "prettier": "^2.2.1",
+    "pretty-quick": "^3.1.0",
+    "ts-jest": "^26.5.3",
     "@types/connect": "^3.4.34",
     "@types/debug": "^4.1.5",
-    "@types/node": "^14.14.31",
+    "@types/node": "^14.14.32",
     "conventional-changelog-cli": "^2.1.1",
     "mockjs": "^1.1.0",
     "rimraf": "^3.0.2",
-    "tsup": "^4.6.0",
-    "typescript": "^4.2.2",
-    "vite": "^2.0.4"
+    "tsup": "^4.6.1",
+    "typescript": "^4.2.3",
+    "vite": "^2.0.5"
   }
 }

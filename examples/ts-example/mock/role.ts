@@ -15,4 +15,19 @@ export default [
       };
     },
   },
+  {
+    url: '/api/testRestful/:id',
+    method: 'get',
+    response: ({ query }) => {
+      console.log('id>>>>>>>>', query.id);
+      return {
+        code: 0,
+        message: 'ok',
+        data: {
+          roleName: 'admin',
+          roleValue: 'admin',
+        },
+      };
+    },
+  },
 ] as MockMethod[];

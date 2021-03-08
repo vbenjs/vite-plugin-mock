@@ -6,6 +6,9 @@
 
     <br />
     <button @click="testPostFormData"> test post form-data</button>
+
+    <br />
+    <button @click="testRestful"> test restful</button>
   </div>
 </template>
 
@@ -46,10 +49,17 @@
           });
       };
 
+      const testRestful = () => {
+        axios.get('/api/testRestful/1').then((res) => {
+          console.log(res);
+        });
+      };
+
       return {
         getRoleById,
         createUser,
         testPostFormData,
+        testRestful,
       };
     },
   });
