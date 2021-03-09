@@ -57,6 +57,15 @@ export async function requestMiddle(opt: ViteMockOptions) {
     }
 
     const matchReq = mockData.find((item) => {
+      //  method不匹配直接过滤
+      if(item.method === req.method.toLowerCase()) return false
+
+      //  匹配 /admin-api/api-permission/(\\d+) 路由
+      let peg = new RegExp(item.url.replace('/','\\/'))
+      if(peg.test(req.url) && !~req.url.indexOf('?')){
+        return true
+      }
+
       if (isGet) {
         return item.url === queryParams.pathname;
       }
