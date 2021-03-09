@@ -1,3 +1,13 @@
+## [2.2.3](https://github.com/anncwb/vite-plugin-mock/compare/v2.2.0...v2.2.3) (2021-03-10)
+
+### Bug Fixes
+
+- ensure that the URLs of different request methods cannot match close [#6](https://github.com/anncwb/vite-plugin-mock/issues/6) ([361a3eb](https://github.com/anncwb/vite-plugin-mock/commit/361a3eb62874f7a6dce8cdc8add4487302c3ee04))
+
+### Features
+
+- support restful api close [#4](https://github.com/anncwb/vite-plugin-mock/issues/4) ([236393e](https://github.com/anncwb/vite-plugin-mock/commit/236393ef551de32fbba62fbb27f678d4782568ec))
+
 ## [2.2.1](https://github.com/anncwb/vite-plugin-mock/compare/v2.2.0...v2.2.1) (2021-03-09)
 
 ### Features
