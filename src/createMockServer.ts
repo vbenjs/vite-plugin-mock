@@ -9,6 +9,7 @@ import fg from 'fast-glob';
 import Mock from 'mockjs';
 import { rollup } from 'rollup';
 import esbuildPlugin from 'rollup-plugin-esbuild';
+import { pathToRegexp, match } from 'path-to-regexp';
 
 import { isArray, isFunction, sleep, isRegExp, loadConfigFromBundledFile } from './utils';
 
@@ -40,7 +41,6 @@ export async function createMockServer(
 }
 
 // request match
-// @ts-ignore
 export async function requestMiddle(opt: ViteMockOptions) {
   const { logger = true } = opt;
   const middleware: NextHandleFunction = async (req, res, next) => {
@@ -51,29 +51,38 @@ export async function requestMiddle(opt: ViteMockOptions) {
       pathname?: string | null;
     } = {};
 
-    const isGet = req.method === 'GET';
+    const isGet = req.method && req.method.toUpperCase() === 'GET';
     if (isGet && req.url) {
       queryParams = url.parse(req.url, true);
     }
 
+    const reqUrl = isGet ? queryParams.pathname : req.url;
     const matchReq = mockData.find((item) => {
-      if (isGet) {
-        return item.url === queryParams.pathname;
-      }
-      return item.url === req.url;
+      if (!reqUrl) return false;
+      return pathToRegexp(item.url).test(reqUrl);
     });
+
     if (matchReq) {
-      const { response, timeout, statusCode } = matchReq;
+      const { response, timeout, statusCode, url } = matchReq;
+
       if (timeout) {
         await sleep(timeout);
       }
-      const { query = {} } = queryParams;
+
+      const urlMatch = match(url, { decode: decodeURIComponent });
+
+      let query = queryParams.query;
+
+      if (reqUrl) {
+        query = (urlMatch(reqUrl) as any).params;
+      }
 
       const body = (await parseJson(req)) as Record<string, any>;
       const mockRes = isFunction(response) ? response({ body, query }) : response;
-      logger && loggerOutput('request invoke', req.url!);
-      res.setHeader('Content-Type', 'application/json');
 
+      logger && loggerOutput('request invoke', req.url!);
+
+      res.setHeader('Content-Type', 'application/json');
       res.statusCode = statusCode || 200;
 
       res.end(JSON.stringify(Mock.mock(mockRes)));
@@ -146,8 +155,7 @@ async function getMockConfig(opt: ViteMockOptions) {
   let ret: any[] = [];
   if (configPath && existsSync(absConfigPath)) {
     logger && loggerOutput(`load mock data from`, absConfigPath);
-    let resultModule = await resolveModule(absConfigPath);
-    ret = resultModule;
+    ret = await resolveModule(absConfigPath);
   } else {
     const mockFiles = fg
       .sync(`**/*.${supportTs ? 'ts' : 'js'}`, {
