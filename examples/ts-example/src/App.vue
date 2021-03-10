@@ -8,7 +8,10 @@
     <button @click="testPostFormData"> test post form-data</button>
 
     <br />
-    <button @click="testRestful"> test restful</button>
+    <button @click="testRestful"> test get restful</button>
+
+    <br />
+    <button @click="testPostRestful"> test post restful</button>
   </div>
 </template>
 
@@ -55,11 +58,18 @@
         });
       };
 
+      const testPostRestful = () => {
+        axios.post('/api/testRestful/1').then((res) => {
+          console.log(res);
+        });
+      };
+
       return {
         getRoleById,
         createUser,
         testPostFormData,
         testRestful,
+        testPostRestful,
       };
     },
   });

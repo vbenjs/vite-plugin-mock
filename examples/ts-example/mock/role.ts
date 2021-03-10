@@ -30,4 +30,20 @@ export default [
       };
     },
   },
+  {
+    url: '/api/testRestful/:id',
+    method: 'post',
+    response: ({ query, body }) => {
+      console.log('query>>>>>>>>', query);
+      console.log('query>>>>>>>>', body);
+      return {
+        code: 0,
+        message: 'ok',
+        data: {
+          roleName: 'admin',
+          roleValue: 'admin',
+        },
+      };
+    },
+  },
 ] as MockMethod[];
