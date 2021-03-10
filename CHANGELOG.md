@@ -1,3 +1,9 @@
+## [2.2.4](https://github.com/anncwb/vite-plugin-mock/compare/v2.2.3...v2.2.4) (2021-03-10)
+
+### Features
+
+- support post restful close [#7](https://github.com/anncwb/vite-plugin-mock/issues/7) ([70b51e8](https://github.com/anncwb/vite-plugin-mock/commit/70b51e8738e41a7011e38e942dd2a136e450ae9f))
+
 ## [2.2.3](https://github.com/anncwb/vite-plugin-mock/compare/v2.2.0...v2.2.3) (2021-03-10)
 
 ### Bug Fixes
