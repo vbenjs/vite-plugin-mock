@@ -46,9 +46,14 @@ export async function loadConfigFromBundledFile(fileName: string, bundledCode: s
       defaultLoader(module, filename);
     }
   };
-  delete require.cache[fileName];
-  const raw = require(fileName);
-  const config = raw.__esModule ? raw.default : raw;
-  require.extensions[extension] = defaultLoader;
+  let config;
+  try {
+    delete require.cache[fileName];
+    const raw = require(fileName);
+    config = raw.__esModule ? raw.default : raw;
+    require.extensions[extension] = defaultLoader;
+    // eslint-disable-next-line
+  } catch (error) {}
+
   return config;
 }

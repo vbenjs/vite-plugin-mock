@@ -35,7 +35,7 @@ export default [
     method: 'post',
     response: ({ query, body }) => {
       console.log('query>>>>>>>>', query);
-      console.log('query>>>>>>>>', body);
+      console.log('body>>>>>>>>', body);
       return {
         code: 0,
         message: 'ok',
