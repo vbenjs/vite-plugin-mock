@@ -155,7 +155,7 @@ Set whether to enable mock function for packaging
 
 **default:**''
 
-If the mock function is enabled in the production environment, that is, `localEnabled=true`, the code will be injected into the bottom of the file corresponding to `injectFile`. The default is `main.ts`
+If the mock function is enabled in the production environment, that is, `prodEnabled=true`, the code will be injected into the bottom of the file corresponding to `injectFile`. The default is `main.ts`
 
 The advantage of this is that you can dynamically control whether mock is enabled in the production environment and mock.js will not be packaged when it is not enabled.
 

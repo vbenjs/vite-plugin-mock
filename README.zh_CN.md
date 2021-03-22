@@ -133,7 +133,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 **default:** ''
 
-如果生产环境开启了 mock 功能,即`localEnabled=true`.则该代码会被注入到`injectFile`对应的文件的底部。默认为`main.ts`
+如果生产环境开启了 mock 功能,即`prodEnabled=true`.则该代码会被注入到`injectFile`对应的文件的底部。默认为`main.ts`
 
 这样做的好处是,可以动态控制生产环境是否开启 mock 且在没有开启的时候 mock.js 不会被打包。
 
