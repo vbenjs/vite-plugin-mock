@@ -211,7 +211,7 @@ export default [
   // 状态吗
   statusCode?:number;
   // 响应数据
-  response: ((opt: { [key: string]: string; body: Record<string,any>; query:  Record<string,any> }) => any) | any;
+  response: ((opt: { [key: string]: string; body: Record<string,any>; query:  Record<string,any>, headers: Record<string, any>; }) => any) | any;
 }
 
 ```

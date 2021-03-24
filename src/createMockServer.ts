@@ -13,7 +13,7 @@ import { pathToRegexp, match } from 'path-to-regexp';
 
 import { isArray, isFunction, sleep, isRegExp, loadConfigFromBundledFile } from './utils';
 
-import createServer, { NextHandleFunction } from 'connect';
+import { IncomingMessage, NextHandleFunction } from 'connect';
 
 const pathResolve = require('@rollup/plugin-node-resolve');
 
@@ -33,6 +33,7 @@ export async function createMockServer(
   if (mockData.length > 0) return;
 
   mockData = await getMockConfig(opt);
+
   const { watchFiles = true } = opt;
   if (watchFiles) {
     const watch = await createWatch(opt);
@@ -84,7 +85,9 @@ export async function requestMiddle(opt: ViteMockOptions) {
       }
 
       const body = (await parseJson(req)) as Record<string, any>;
-      const mockRes = isFunction(response) ? response({ body, query }) : response;
+      const mockRes = isFunction(response)
+        ? response({ body, query, headers: req.headers })
+        : response;
 
       logger && loggerOutput('request invoke', req.url!);
 
@@ -134,7 +137,7 @@ function cleanRequireCache(opt: ViteMockOptions) {
   });
 }
 
-function parseJson(req: createServer.IncomingMessage) {
+function parseJson(req: IncomingMessage) {
   return new Promise((resolve) => {
     let body = '';
     let jsonStr = '';
@@ -181,9 +184,15 @@ async function getMockConfig(opt: ViteMockOptions) {
       });
     try {
       ret = [];
+      const resolveModulePromiseList = [];
       for (let index = 0; index < mockFiles.length; index++) {
         const mockFile = mockFiles[index];
-        const resultModule = await resolveModule(join(absMockPath, mockFile));
+        resolveModulePromiseList.push(resolveModule(join(absMockPath, mockFile)));
+      }
+
+      const loadAllResult = await Promise.all(resolveModulePromiseList);
+
+      for (const resultModule of loadAllResult) {
         let mod = resultModule;
 
         if (!isArray(mod)) {
