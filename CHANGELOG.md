@@ -1,3 +1,9 @@
+# [2.4.0](https://github.com/anncwb/vite-plugin-mock/compare/v2.3.0...v2.4.0) (2021-03-25)
+
+### Features
+
+- response return headers, close [#10](https://github.com/anncwb/vite-plugin-mock/issues/10) ([bcb7abd](https://github.com/anncwb/vite-plugin-mock/commit/bcb7abd98e8726af6f1721ad021c06028b1ffca7))
+
 ## [2.2.4](https://github.com/anncwb/vite-plugin-mock/compare/v2.2.3...v2.2.4) (2021-03-10)
 
 ### Features
