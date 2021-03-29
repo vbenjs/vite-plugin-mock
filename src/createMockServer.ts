@@ -59,6 +59,7 @@ export async function requestMiddle(opt: ViteMockOptions) {
 
     const reqUrl = isGet ? queryParams.pathname : req.url;
     const matchReq = mockData.find((item) => {
+      if (!item.url) return;
       if (item.method && item.method.toUpperCase() !== req.method) return false;
       if (!reqUrl) return false;
       return pathToRegexp(item.url).test(reqUrl);
