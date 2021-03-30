@@ -9,9 +9,10 @@
 import type { ViteMockOptions } from './types';
 import type { Plugin } from 'vite';
 
-import { ResolvedConfig, normalizePath } from 'vite';
-import { createMockServer, requestMiddle } from './createMockServer';
 import path from 'path';
+
+import { ResolvedConfig, normalizePath } from 'vite';
+import { createMockServer, requestMiddleware } from './createMockServer';
 
 export function viteMockServe(opt: ViteMockOptions): Plugin {
   const { supportTs = true } = opt;
@@ -29,6 +30,7 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
     name: 'vite:mock',
     enforce: 'pre',
     configResolved(resolvedConfig) {
+      createMockServer(opt);
       config = resolvedConfig;
       isDev = config.command === 'serve' && !config.isProduction;
       needSourcemap = !!resolvedConfig.build.sourcemap;
@@ -39,10 +41,7 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
       if (!localEnabled) {
         return;
       }
-
-      createMockServer(opt);
-
-      const middleware = await requestMiddle(opt);
+      const middleware = await requestMiddleware(opt);
       middlewares.use(middleware);
     },
 

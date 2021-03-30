@@ -1,21 +1,16 @@
-import type { ViteMockOptions, MockMethod } from './types';
+import type { ViteMockOptions, MockMethod, NodeModuleWithCompile } from './types';
 
-import { existsSync } from 'fs';
-import { join } from 'path';
+import path from 'path';
+import fs from 'fs';
 import chokidar from 'chokidar';
 import chalk from 'chalk';
 import url from 'url';
 import fg from 'fast-glob';
 import Mock from 'mockjs';
-import { rollup } from 'rollup';
-import esbuildPlugin from 'rollup-plugin-esbuild';
+import { build } from 'esbuild';
 import { pathToRegexp, match } from 'path-to-regexp';
-
-import { isArray, isFunction, sleep, isRegExp, loadConfigFromBundledFile } from './utils';
-
+import { isArray, isFunction, sleep, isRegExp } from './utils';
 import { IncomingMessage, NextHandleFunction } from 'connect';
-
-const pathResolve = require('@rollup/plugin-node-resolve');
 
 export let mockData: MockMethod[] = [];
 
@@ -30,19 +25,14 @@ export async function createMockServer(
     logger: true,
     ...opt,
   };
+
   if (mockData.length > 0) return;
-
   mockData = await getMockConfig(opt);
-
-  const { watchFiles = true } = opt;
-  if (watchFiles) {
-    const watch = await createWatch(opt);
-    watch && watch();
-  }
+  await createWatch(opt);
 }
 
 // request match
-export async function requestMiddle(opt: ViteMockOptions) {
+export async function requestMiddleware(opt: ViteMockOptions) {
   const { logger = true } = opt;
   const middleware: NextHandleFunction = async (req, res, next) => {
     let queryParams: {
@@ -58,14 +48,18 @@ export async function requestMiddle(opt: ViteMockOptions) {
     }
 
     const reqUrl = isGet ? queryParams.pathname : req.url;
-    const matchReq = mockData.find((item) => {
-      if (item.method && item.method.toUpperCase() !== req.method) return false;
-      if (!reqUrl) return false;
+    const matchRequest = mockData.find((item) => {
+      if (!reqUrl || !item || !item.url) {
+        return false;
+      }
+      if (item.method && item.method.toUpperCase() !== req.method) {
+        return false;
+      }
       return pathToRegexp(item.url).test(reqUrl);
     });
 
-    if (matchReq) {
-      const { response, timeout, statusCode, url } = matchReq;
+    if (matchRequest) {
+      const { response, timeout, statusCode, url } = matchRequest;
 
       if (timeout) {
         await sleep(timeout);
@@ -84,8 +78,8 @@ export async function requestMiddle(opt: ViteMockOptions) {
         }
       }
 
-      const body = (await parseJson(req)) as Record<string, any>;
-      const mockRes = isFunction(response)
+      const body = await parseJson(req);
+      const mockResponse = isFunction(response)
         ? response({ body, query, headers: req.headers })
         : response;
 
@@ -94,7 +88,7 @@ export async function requestMiddle(opt: ViteMockOptions) {
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = statusCode || 200;
 
-      res.end(JSON.stringify(Mock.mock(mockRes)));
+      res.end(JSON.stringify(Mock.mock(mockResponse)));
       return;
     }
     next();
@@ -104,12 +98,20 @@ export async function requestMiddle(opt: ViteMockOptions) {
 
 // create watch mock
 function createWatch(opt: ViteMockOptions) {
-  const { configPath, logger } = opt;
+  const { configPath, logger, watchFiles } = opt;
+
+  if (!watchFiles) {
+    return;
+  }
+
   const { absConfigPath, absMockPath } = getPath(opt);
-  if (process.env.VITE_DISABLED_WATCH_MOCK === 'true') return;
+
+  if (process.env.VITE_DISABLED_WATCH_MOCK === 'true') {
+    return;
+  }
 
   const watchDir = [];
-  const exitsConfigPath = existsSync(absConfigPath);
+  const exitsConfigPath = fs.existsSync(absConfigPath);
 
   exitsConfigPath && configPath ? watchDir.push(absConfigPath) : watchDir.push(absMockPath);
 
@@ -117,14 +119,10 @@ function createWatch(opt: ViteMockOptions) {
     ignoreInitial: true,
   });
 
-  const watch = () => {
-    watcher.on('all', async (event, file) => {
-      logger && loggerOutput(`mock file ${event}`, file);
-
-      mockData = await getMockConfig(opt);
-    });
-  };
-  return watch;
+  watcher.on('all', async (event, file) => {
+    logger && loggerOutput(`mock file ${event}`, file);
+    mockData = await getMockConfig(opt);
+  });
 }
 
 // clear cache
@@ -137,7 +135,7 @@ function cleanRequireCache(opt: ViteMockOptions) {
   });
 }
 
-function parseJson(req: IncomingMessage) {
+function parseJson(req: IncomingMessage): Promise<Record<string, any>> {
   return new Promise((resolve) => {
     let body = '';
     let jsonStr = '';
@@ -150,7 +148,7 @@ function parseJson(req: IncomingMessage) {
       } catch (err) {
         jsonStr = '';
       }
-      resolve(jsonStr);
+      resolve(jsonStr as any);
       return;
     });
   });
@@ -161,49 +159,52 @@ async function getMockConfig(opt: ViteMockOptions) {
   cleanRequireCache(opt);
   const { absConfigPath, absMockPath } = getPath(opt);
   const { ignore, configPath, supportTs, logger } = opt;
-  let ret: any[] = [];
-  if (configPath && existsSync(absConfigPath)) {
+
+  let ret: MockMethod[] = [];
+
+  if (configPath && fs.existsSync(absConfigPath)) {
     logger && loggerOutput(`load mock data from`, absConfigPath);
     ret = await resolveModule(absConfigPath);
-  } else {
-    const mockFiles = fg
-      .sync(`**/*.${supportTs ? 'ts' : 'js'}`, {
-        cwd: absMockPath,
-      })
-      .filter((item) => {
-        if (!ignore) {
-          return true;
-        }
-        if (isFunction(ignore)) {
-          return ignore(item);
-        }
-        if (isRegExp(ignore)) {
-          return !ignore.test(item);
-        }
+    return ret;
+  }
+
+  const mockFiles = fg
+    .sync(`**/*.${supportTs ? 'ts' : 'js'}`, {
+      cwd: absMockPath,
+    })
+    .filter((item) => {
+      if (!ignore) {
         return true;
-      });
-    try {
-      ret = [];
-      const resolveModulePromiseList = [];
-      for (let index = 0; index < mockFiles.length; index++) {
-        const mockFile = mockFiles[index];
-        resolveModulePromiseList.push(resolveModule(join(absMockPath, mockFile)));
       }
-
-      const loadAllResult = await Promise.all(resolveModulePromiseList);
-
-      for (const resultModule of loadAllResult) {
-        let mod = resultModule;
-
-        if (!isArray(mod)) {
-          mod = [mod];
-        }
-        ret = [...ret, ...mod];
+      if (isFunction(ignore)) {
+        return ignore(item);
       }
-    } catch (error) {
-      loggerOutput(`mock reload error`, error);
-      ret = [];
+      if (isRegExp(ignore)) {
+        return !ignore.test(item);
+      }
+      return true;
+    });
+  try {
+    ret = [];
+    const resolveModulePromiseList = [];
+
+    for (let index = 0; index < mockFiles.length; index++) {
+      const mockFile = mockFiles[index];
+      resolveModulePromiseList.push(resolveModule(path.join(absMockPath, mockFile)));
     }
+
+    const loadAllResult = await Promise.all(resolveModulePromiseList);
+
+    for (const resultModule of loadAllResult) {
+      let mod = resultModule;
+      if (!isArray(mod)) {
+        mod = [mod];
+      }
+      ret = [...ret, ...mod];
+    }
+  } catch (error) {
+    loggerOutput(`mock reload error`, error);
+    ret = [];
   }
   return ret;
 }
@@ -211,39 +212,25 @@ async function getMockConfig(opt: ViteMockOptions) {
 // Inspired by vite
 // support mock .ts files
 async function resolveModule(path: string): Promise<any> {
-  // use node-resolve to support .ts files
-  const nodeResolve = pathResolve.nodeResolve({
-    extensions: ['.js', '.ts'],
-  });
-  const bundle = await rollup({
-    input: path,
-    treeshake: false,
-    plugins: [
-      esbuildPlugin({
-        include: /\.[jt]sx?$/,
-        exclude: /node_modules/,
-        sourceMap: false,
-      }),
-      nodeResolve,
-    ],
-  });
-
-  const {
-    output: [{ code }],
-  } = await bundle.generate({
-    exports: 'named',
+  const result = await build({
+    entryPoints: [path],
+    outfile: 'out.js',
+    write: false,
+    platform: 'node',
+    bundle: true,
     format: 'cjs',
   });
+  const { text } = result.outputFiles[0];
 
-  return await loadConfigFromBundledFile(path, code);
+  return await loadConfigFromBundledFile(path, text);
 }
 
 // get custom config file path and mock dir path
 function getPath(opt: ViteMockOptions) {
   const { mockPath, configPath } = opt;
   const cwd = process.cwd();
-  const absMockPath = join(cwd, mockPath || '');
-  const absConfigPath = join(cwd, configPath || '');
+  const absMockPath = path.join(cwd, mockPath || '');
+  const absConfigPath = path.join(cwd, configPath || '');
   return {
     absMockPath,
     absConfigPath,
@@ -256,4 +243,27 @@ function loggerOutput(title: string, msg: string, type: 'info' | 'error' = 'info
   return console.log(
     `${chalk.dim(new Date().toLocaleTimeString())} ${tag} ${chalk.green(title)} ${chalk.dim(msg)}`
   );
+}
+
+// Parse file content
+export async function loadConfigFromBundledFile(fileName: string, bundledCode: string) {
+  const extension = path.extname(fileName);
+  const defaultLoader = require.extensions[extension]!;
+  require.extensions[extension] = (module: NodeModule, filename: string) => {
+    if (filename === fileName) {
+      (module as NodeModuleWithCompile)._compile(bundledCode, filename);
+    } else {
+      defaultLoader(module, filename);
+    }
+  };
+  let config;
+  try {
+    delete require.cache[fileName];
+    const raw = require(fileName);
+    config = raw.__esModule ? raw.default : raw;
+    require.extensions[extension] = defaultLoader;
+    // eslint-disable-next-line
+  } catch (error) {}
+
+  return config;
 }
