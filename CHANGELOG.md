@@ -1,3 +1,13 @@
+## [2.4.1](https://github.com/anncwb/vite-plugin-mock/compare/v2.4.0...v2.4.1) (2021-03-30)
+
+### Bug Fixes
+
+- empty TS file in mock folder is error ([669b804](https://github.com/anncwb/vite-plugin-mock/commit/669b804df31f537bf6985b56972b32dd11e20504))
+
+### Performance Improvements
+
+- perf code ([98b9dbc](https://github.com/anncwb/vite-plugin-mock/commit/98b9dbc64f5c6da815a1f29c6b588fddd5189370))
+
 # [2.4.0](https://github.com/anncwb/vite-plugin-mock/compare/v2.3.0...v2.4.0) (2021-03-25)
 
 ### Features
