@@ -10,30 +10,28 @@ import type { ViteMockOptions } from './types';
 import type { Plugin } from 'vite';
 
 import path from 'path';
-
 import { ResolvedConfig, normalizePath } from 'vite';
 import { createMockServer, requestMiddleware } from './createMockServer';
 
 export function viteMockServe(opt: ViteMockOptions): Plugin {
   const { supportTs = true } = opt;
-  const {
-    injectFile = normalizePath(path.resolve(process.cwd(), `src/main.${supportTs ? 'ts' : 'js'}`)),
-  } = opt;
+  const defaultEnter = normalizePath(
+    path.resolve(process.cwd(), `src/main.${supportTs ? 'ts' : 'js'}`)
+  );
+  const { injectFile = defaultEnter } = opt;
 
   let isDev = false;
-
   let config: ResolvedConfig;
-
   let needSourcemap = false;
 
   return {
     name: 'vite:mock',
     enforce: 'pre',
     configResolved(resolvedConfig) {
-      createMockServer(opt);
       config = resolvedConfig;
-      isDev = config.command === 'serve' && !config.isProduction;
+      isDev = config.command === 'serve';
       needSourcemap = !!resolvedConfig.build.sourcemap;
+      isDev && createMockServer(opt);
     },
 
     configureServer: async ({ middlewares }) => {

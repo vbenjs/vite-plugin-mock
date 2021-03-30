@@ -35,7 +35,7 @@ function __param2Obj__(url: string) {
 function __XHR2ExpressReqWrapper__(handle: (d: any) => any, timeout = 0) {
   return function (options: any) {
     let result = null;
-    if (handle instanceof Function) {
+    if (typeof handle === 'function') {
       const { body, type, url } = options;
       result = handle({
         method: type,

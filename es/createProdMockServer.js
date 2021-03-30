@@ -5,6 +5,7 @@ export function createProdMockServer(mockList) {
   // @ts-ignore
   Mock.XHR.prototype.send = function () {
     if (this.custom.xhr) this.custom.xhr.withCredentials = this.withCredentials || false;
+    // eslint-disable-next-line
     this.__send.apply(this, arguments);
   };
   for (const { url, method, response, timeout } of mockList) {
@@ -30,7 +31,7 @@ function __param2Obj__(url) {
 function __XHR2ExpressReqWrapper__(handle, timeout = 0) {
   return function (options) {
     let result = null;
-    if (handle instanceof Function) {
+    if (typeof handle === 'function') {
       const { body, type, url } = options;
       result = handle({
         method: type,

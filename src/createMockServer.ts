@@ -1,4 +1,4 @@
-import type { ViteMockOptions, MockMethod, NodeModuleWithCompile } from './types';
+import type { ViteMockOptions, MockMethod, NodeModuleWithCompile, Recordable } from './types';
 
 import path from 'path';
 import fs from 'fs';
@@ -69,11 +69,7 @@ export async function requestMiddleware(opt: ViteMockOptions) {
 
       let query = queryParams.query;
       if (reqUrl) {
-        if (isGet) {
-          if (JSON.stringify(query) === '{}') {
-            query = (urlMatch(reqUrl) as any).params || {};
-          }
-        } else {
+        if ((isGet && JSON.stringify(query) === '{}') || !isGet) {
           query = (urlMatch(reqUrl) as any).params || {};
         }
       }
@@ -82,13 +78,11 @@ export async function requestMiddleware(opt: ViteMockOptions) {
       const mockResponse = isFunction(response)
         ? response({ body, query, headers: req.headers })
         : response;
-
-      logger && loggerOutput('request invoke', req.url!);
-
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = statusCode || 200;
-
       res.end(JSON.stringify(Mock.mock(mockResponse)));
+
+      logger && loggerOutput('request invoke', req.url!);
       return;
     }
     next();
@@ -135,7 +129,7 @@ function cleanRequireCache(opt: ViteMockOptions) {
   });
 }
 
-function parseJson(req: IncomingMessage): Promise<Record<string, any>> {
+function parseJson(req: IncomingMessage): Promise<Recordable> {
   return new Promise((resolve) => {
     let body = '';
     let jsonStr = '';
