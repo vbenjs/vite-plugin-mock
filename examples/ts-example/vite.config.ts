@@ -4,7 +4,7 @@ import { UserConfigExport, ConfigEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
 export default ({ command }: ConfigEnv): UserConfigExport => {
-  let prodMock = true;
+  const prodMock = true;
   return {
     plugins: [
       vue(),
