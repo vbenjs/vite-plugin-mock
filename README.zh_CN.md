@@ -287,7 +287,7 @@ yarn serve
 
 [Vben Admin](https://github.com/anncwb/vue-vben-admin)
 
-## 注意是想
+## 注意事项
 
 - 无法在 mock.ts 文件中使用 node 模块，否则生产环境将失败
 - 模拟数据如果用于生产环境，仅适用于某些测试环境。 不要在正式环境中打开它，以避免不必要的错误。 同时，在生产环境中，它可能会影响正常的 Ajax 请求，例如文件上传/下载失败等。
