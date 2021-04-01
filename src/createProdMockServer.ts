@@ -1,3 +1,4 @@
+/* eslint-disable */
 import Mock from 'mockjs';
 
 export function createProdMockServer(mockList: any[]) {
@@ -5,9 +6,30 @@ export function createProdMockServer(mockList: any[]) {
   Mock.XHR.prototype.__send = Mock.XHR.prototype.send;
   // @ts-ignore
   Mock.XHR.prototype.send = function () {
-    if (this.custom.xhr) this.custom.xhr.withCredentials = this.withCredentials || false;
+    if (this.custom.xhr) {
+      this.custom.xhr.withCredentials = this.withCredentials || false;
+
+      if (this.responseType) {
+        this.custom.xhr.responseType = this.responseType;
+      }
+    }
     // eslint-disable-next-line
     this.__send.apply(this, arguments);
+  };
+
+  // @ts-ignore
+  Mock.XHR.prototype.proxy_open = Mock.XHR.prototype.open;
+
+  // @ts-ignore
+  Mock.XHR.prototype.open = function () {
+    let responseType = this.responseType;
+    // @ts-ignore
+    this.proxy_open(...arguments);
+    if (this.custom.xhr) {
+      if (responseType) {
+        this.custom.xhr.responseType = responseType;
+      }
+    }
   };
 
   for (const { url, method, response, timeout } of mockList) {
