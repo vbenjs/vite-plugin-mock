@@ -6,7 +6,11 @@
 
 提供本地和生产模拟服务。
 
-vite 的数据模拟插件，是基于 vite.js 开发的。 并同时支持本地环境和生产环境。 Connect 服务中间件在本地使用，mockjs 在生产环境中使用
+vite 的数据模拟插件，是基于 vite.js 开发的。 并同时支持本地环境和生产环境。 Connect 服务中间件在本地使用，mockjs 在生产环境中使用。
+
+## Production environment problem description
+
+The current production environment cannot support the acquisition of `headers` and the acquisition of `restful`Url format parameters. So there are those two formats that need to be used in the production environment.
 
 ### 安装 (yarn or npm)
 
@@ -72,6 +76,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
     prodEnabled?: boolean;
     injectFile?: string;
     injectCode?: string;
+    logger?:boolean;
 }
 ```
 
@@ -133,7 +138,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 **default:** ''
 
-如果生产环境开启了 mock 功能,即`prodEnabled=true`.则该代码会被注入到`injectFile`对应的文件的底部。默认为`main.ts`
+如果生产环境开启了 mock 功能,即`prodEnabled=true`.则该代码会被注入到`injectFile`对应的文件的底部。默认为`main.{ts,js}`
 
 这样做的好处是,可以动态控制生产环境是否开启 mock 且在没有开启的时候 mock.js 不会被打包。
 
@@ -143,9 +148,9 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 **type:** `string`
 
-**default:** `path.resolve(process.cwd(), 'src/main.ts')`
+**default:** `path.resolve(process.cwd(), 'src/main.{ts,js}')`
 
-`injectCode`代码注入的文件,默认为项目根目录下`src/main.ts`
+`injectCode`代码注入的文件,默认为项目根目录下`src/main.{ts,js}`
 
 ### configPath
 
@@ -222,11 +227,11 @@ export default [
 
 ```ts
 //  mockProdServer.ts
-
 import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
 
 // 逐一导入您的mock.ts文件
 // 如果使用vite.mock.config.ts，只需直接导入文件
+// 可以使用 import.meta.glob功能来进行全部导入
 import testModule from '../mock/test';
 
 export function setupProdMockServer() {

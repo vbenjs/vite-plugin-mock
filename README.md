@@ -155,7 +155,7 @@ Set whether to enable mock function for packaging
 
 **default:**''
 
-If the mock function is enabled in the production environment, that is, `prodEnabled=true`, the code will be injected into the bottom of the file corresponding to `injectFile`. The default is `main.ts`
+If the mock function is enabled in the production environment, that is, `prodEnabled=true`, the code will be injected into the bottom of the file corresponding to `injectFile`. The default is `main.{ts,js}`
 
 The advantage of this is that you can dynamically control whether mock is enabled in the production environment and mock.js will not be packaged when it is not enabled.
 
@@ -165,9 +165,9 @@ If the code is written directly in `main.ts`, no matter whether it is turned on 
 
 **type:** `string`
 
-**default:** `path.resolve(process.cwd(),'src/main.ts')`
+**default:** `path.resolve(process.cwd(),'src/main.{ts,js}')`
 
-The file injected by `injectCode` code, the default is `src/main.ts` in the project root directory
+The file injected by `injectCode` code, the default is `src/main.{ts,js}` in the project root directory
 
 ### configPath
 
@@ -249,6 +249,7 @@ import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
 
 // Import your mock .ts files one by one
 // If you use vite.mock.config.ts, just import the file directly
+// You can use the import.meta.glob function to import all
 import testModule from '../mock/test';
 
 export function setupProdMockServer() {
