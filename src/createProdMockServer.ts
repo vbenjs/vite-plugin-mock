@@ -1,10 +1,9 @@
 /* eslint-disable */
-import Mock from 'mockjs';
+import mockJs from 'mockjs';
 
+const Mock = mockJs as any;
 export function createProdMockServer(mockList: any[]) {
-  // @ts-ignore
   Mock.XHR.prototype.__send = Mock.XHR.prototype.send;
-  // @ts-ignore
   Mock.XHR.prototype.send = function () {
     if (this.custom.xhr) {
       this.custom.xhr.withCredentials = this.withCredentials || false;
@@ -13,17 +12,13 @@ export function createProdMockServer(mockList: any[]) {
         this.custom.xhr.responseType = this.responseType;
       }
     }
-    // eslint-disable-next-line
     this.__send.apply(this, arguments);
   };
 
-  // @ts-ignore
   Mock.XHR.prototype.proxy_open = Mock.XHR.prototype.open;
 
-  // @ts-ignore
   Mock.XHR.prototype.open = function () {
     let responseType = this.responseType;
-    // @ts-ignore
     this.proxy_open(...arguments);
     if (this.custom.xhr) {
       if (responseType) {
@@ -34,7 +29,7 @@ export function createProdMockServer(mockList: any[]) {
 
   for (const { url, method, response, timeout } of mockList) {
     __setupMock__(timeout);
-    Mock.mock(new RegExp(url), method || 'get', __XHR2ExpressReqWrapper__(response, timeout));
+    Mock.mock(new RegExp(url), method || 'get', __XHR2ExpressReqWrapper__(response));
   }
 }
 
@@ -54,7 +49,7 @@ function __param2Obj__(url: string) {
   );
 }
 
-function __XHR2ExpressReqWrapper__(handle: (d: any) => any, timeout = 0) {
+function __XHR2ExpressReqWrapper__(handle: (d: any) => any) {
   return function (options: any) {
     let result = null;
     if (typeof handle === 'function') {
