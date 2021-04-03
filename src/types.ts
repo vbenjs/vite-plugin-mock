@@ -1,3 +1,5 @@
+import { IncomingMessage, ServerResponse } from 'node:http';
+
 export interface ViteMockOptions {
   mockPath?: string;
   configPath?: string;
@@ -20,7 +22,8 @@ export declare interface MockMethod {
   method?: MethodType;
   timeout?: number;
   statusCode?: number;
-  response: ((opt: { body: Recordable; query: Recordable; headers: Recordable }) => any) | any;
+  response?: ((opt: { body: Recordable; query: Recordable; headers: Recordable }) => any) | any;
+  rawResponse?: (req: IncomingMessage, res: ServerResponse) => void;
 }
 
 export interface NodeModuleWithCompile extends NodeModule {

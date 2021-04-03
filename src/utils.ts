@@ -6,7 +6,7 @@ export function is(val: unknown, type: string) {
 
 // eslint-disable-next-line
 export function isFunction<T = Function>(val: unknown): val is T {
-  return is(val, 'Function');
+  return is(val, 'Function') || is(val, 'AsyncFunction');
 }
 
 export function isArray(val: any): val is Array<any> {
