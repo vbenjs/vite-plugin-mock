@@ -1,3 +1,19 @@
+# [2.5.0](https://github.com/anncwb/vite-plugin-mock/compare/v2.4.0...v2.5.0) (2021-04-06)
+
+### Bug Fixes
+
+- production xhr ([6c94783](https://github.com/anncwb/vite-plugin-mock/commit/6c94783f07b27c6ac58a4642c0e7eddf34b06f1f))
+- **eslint warn:** fix some warn ([b44c13b](https://github.com/anncwb/vite-plugin-mock/commit/b44c13b766cda0ee310071e9febeb48d73ef7bde))
+- empty TS file in mock folder is error ([669b804](https://github.com/anncwb/vite-plugin-mock/commit/669b804df31f537bf6985b56972b32dd11e20504))
+
+### Features
+
+- add rawResponse option to MockMethod ([#17](https://github.com/anncwb/vite-plugin-mock/issues/17)) ([24775f9](https://github.com/anncwb/vite-plugin-mock/commit/24775f9d7b14d024d90cd36c850a00634341927f)), closes [#16](https://github.com/anncwb/vite-plugin-mock/issues/16)
+
+### Performance Improvements
+
+- perf code ([98b9dbc](https://github.com/anncwb/vite-plugin-mock/commit/98b9dbc64f5c6da815a1f29c6b588fddd5189370))
+
 ## [2.4.1](https://github.com/anncwb/vite-plugin-mock/compare/v2.4.0...v2.4.1) (2021-03-30)
 
 ### Bug Fixes
