@@ -70,7 +70,7 @@ export async function requestMiddleware(opt: ViteMockOptions) {
       let query = queryParams.query;
       if (reqUrl) {
         if ((isGet && JSON.stringify(query) === '{}') || !isGet) {
-          query = (urlMatch(reqUrl) as any).params || {};
+          query = JSON.parse(JSON.stringify((urlMatch(reqUrl) as any).params)) || {}
         }
       }
 
