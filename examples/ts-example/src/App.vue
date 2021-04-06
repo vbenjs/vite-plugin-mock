@@ -64,6 +64,7 @@ export default defineComponent({
 
     const getRoleById = () => {
       requestLists.value[0].show = true;
+      axios.defaults.headers.common['Authorization'] = 'Bearer eyJhbGciOiJIUzUxMiJ9.Vben';
       axios.get('/api/getRoleById', { params: { id: 2 } }).then(({ data }) => {
         requestLists.value[0].info = data;
         requestLists.value[0].show = false;

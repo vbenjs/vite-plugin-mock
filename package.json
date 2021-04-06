@@ -62,6 +62,7 @@
     "@types/node": "^14.14.37",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
+    "better-mock": "^0.3.1",
     "commitizen": "^4.2.3",
     "conventional-changelog-cli": "^2.1.1",
     "eslint": "^7.23.0",

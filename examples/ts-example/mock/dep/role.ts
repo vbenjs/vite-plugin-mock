@@ -3,8 +3,9 @@ export default [
   {
     url: '/api/getRoleById',
     method: 'get',
-    response: ({ query }) => {
-      console.log('id>>>>>>>>', query.id);
+    response: ({ query, headers }) => {
+      console.log('id>>>>>>>>', query.id)
+      console.log('headers>>>>>>>>', headers);
       return {
         code: 0,
         message: 'ok',

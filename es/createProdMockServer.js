@@ -1,5 +1,5 @@
 /* eslint-disable */
-import mockJs from 'mockjs';
+import mockJs from 'better-mock';
 const Mock = mockJs;
 export function createProdMockServer(mockList) {
   Mock.XHR.prototype.__send = Mock.XHR.prototype.send;
@@ -46,11 +46,12 @@ function __XHR2ExpressReqWrapper__(handle) {
   return function (options) {
     let result = null;
     if (typeof handle === 'function') {
-      const { body, type, url } = options;
+      const { body, type, url, headers } = options;
       result = handle({
         method: type,
         body: JSON.parse(body),
         query: __param2Obj__(url),
+        headers
       });
     } else {
       result = handle;
