@@ -59,7 +59,7 @@ export async function requestMiddleware(opt: ViteMockOptions) {
     });
 
     if (matchRequest) {
-      const { response, timeout, statusCode, url } = matchRequest;
+      const { response, rawResponse, timeout, statusCode, url } = matchRequest;
 
       if (timeout) {
         await sleep(timeout);
@@ -74,13 +74,17 @@ export async function requestMiddleware(opt: ViteMockOptions) {
         }
       }
 
-      const body = await parseJson(req);
-      const mockResponse = isFunction(response)
-        ? response({ body, query, headers: req.headers })
-        : response;
-      res.setHeader('Content-Type', 'application/json');
-      res.statusCode = statusCode || 200;
-      res.end(JSON.stringify(Mock.mock(mockResponse)));
+      if (isFunction(rawResponse)) {
+        await rawResponse(req, res);
+      } else {
+        const body = await parseJson(req);
+        const mockResponse = isFunction(response)
+          ? response({ body, query, headers: req.headers })
+          : response;
+        res.setHeader('Content-Type', 'application/json');
+        res.statusCode = statusCode || 200;
+        res.end(JSON.stringify(Mock.mock(mockResponse)));
+      }
 
       logger && loggerOutput('request invoke', req.url!);
       return;

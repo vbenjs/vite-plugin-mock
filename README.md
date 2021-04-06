@@ -217,6 +217,22 @@ export default [
       },
     },
   },
+  {
+    url: '/api/text',
+    method: 'post',
+    rawResponse: async (req, res) => {
+      let reqbody = '';
+      await new Promise((resolve) => {
+        req.on('data', (chunk) => {
+          reqbody += chunk;
+        });
+        req.on('end', () => resolve(undefined));
+      });
+      res.setHeader('Content-Type', 'text/plain');
+      res.statusCode = 200;
+      res.end(`hello, ${reqbody}`);
+    },
+  },
 ] as MockMethod[];
 ```
 
@@ -232,8 +248,10 @@ export default [
   timeout?: number;
   // default: 200
   statusCode?:number;
-  // response data
-  response: ((opt: { [key: string]: string; body: Record<string,any>; query:  Record<string,any>, headers: Record<string, any>; }) => any) | any;
+  // response data (JSON)
+  response?: ((opt: { [key: string]: string; body: Record<string,any>; query:  Record<string,any>, headers: Record<string, any>; }) => any) | any;
+  // response (non-JSON)
+  rawResponse?: (req: IncomingMessage, res: ServerResponse) => void;
 }
 
 ```
