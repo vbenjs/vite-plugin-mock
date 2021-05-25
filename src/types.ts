@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'node:http';
+import { IncomingMessage, ServerResponse } from 'http';
 
 export interface ViteMockOptions {
   mockPath?: string;
