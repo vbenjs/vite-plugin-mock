@@ -12,6 +12,13 @@ export function createProdMockServer(mockList: any[]) {
         this.custom.xhr.responseType = this.responseType;
       }
     }
+    if (this.custom.requestHeaders) {
+      const headers: any = {};
+      for (let k in this.custom.requestHeaders) {
+        headers[k.toString().toLowerCase()] = this.custom.requestHeaders[k];
+      }
+      this.custom.options = Object.assign({}, this.custom.options, { headers });
+    }
     this.__send.apply(this, arguments);
   };
 
@@ -53,11 +60,12 @@ function __XHR2ExpressReqWrapper__(handle: (d: any) => any) {
   return function (options: any) {
     let result = null;
     if (typeof handle === 'function') {
-      const { body, type, url } = options;
+      const { body, type, url, headers } = options;
       result = handle({
         method: type,
         body: JSON.parse(body),
         query: __param2Obj__(url),
+        headers,
       });
     } else {
       result = handle;
