@@ -20,7 +20,7 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch",
     "install:husky": "is-ci || husky install",
-    "postinstall": "npm run install:husky",
+    "_postinstall": "npm run install:husky",
     "postpublish": "pinst --enable"
   },
   "keywords": [
