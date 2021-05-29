@@ -10,7 +10,13 @@ export function createProdMockServer(mockList) {
         this.custom.xhr.responseType = this.responseType;
       }
     }
-    this.custom.options = Object.assign( { }, this.custom.options, { headers: this.custom.requestHeaders })
+    if (this.custom.requestHeaders) {
+        const headers = {};
+        for(let k in this.custom.requestHeaders){
+            headers[k.toString().toLowerCase()]=this.custom.requestHeaders[k];
+        }
+        this.custom.options = Object.assign( { }, this.custom.options, { headers })
+    }
     this.__send.apply(this, arguments);
   };
   Mock.XHR.prototype.proxy_open = Mock.XHR.prototype.open;
