@@ -2214,15 +2214,15 @@ error-ex@^1.2.0, error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
+esbuild@0.11.3:
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/esbuild/-/esbuild-0.11.3.tgz#b57165b907be4ffba651f6450538ce8d8c1d5eb0"
+  integrity sha512-BzVRHcCtFepjS9WcqRjqoIxLqgpK21a8J4Zi4msSGxDxiXVO1IbcqT1KjhdDDnJxKfe7bvzZrvMEX+bVO0Elcw==
+
 esbuild@^0.10.2:
   version "0.10.2"
   resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.10.2.tgz#caa65a8f3096d547d89159918039df6c5c6c90be"
   integrity sha512-/5vsZD7wTJJHC3yNXLUjXNvUDwqwNoIMvFvLd9tcDQ9el5l13pspYm3yufavjIeYvNtAbo+6N/6uoWx9dGA6ug==
-
-esbuild@^0.11.4:
-  version "0.11.4"
-  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.11.4.tgz#7f7901a340ea1166b1a1076897d971a068139ecb"
-  integrity sha512-qWGlOOTwyTn4f846LoR47Mif4Aek4rY9ChdXN7q7G15HpDYq3pxwnPFWe2os/jOq8naFh2Z+FqWfkq8ZP6kATw==
 
 esbuild@^0.9.3:
   version "0.9.3"

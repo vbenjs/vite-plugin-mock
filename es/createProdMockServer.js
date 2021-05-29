@@ -10,13 +10,6 @@ export function createProdMockServer(mockList) {
         this.custom.xhr.responseType = this.responseType;
       }
     }
-    if (this.custom.requestHeaders) {
-        const headers = {};
-        for(let k in this.custom.requestHeaders){
-            headers[k.toString().toLowerCase()]=this.custom.requestHeaders[k];
-        }
-        this.custom.options = Object.assign( { }, this.custom.options, { headers })
-    }
     this.__send.apply(this, arguments);
   };
   Mock.XHR.prototype.proxy_open = Mock.XHR.prototype.open;
@@ -53,12 +46,11 @@ function __XHR2ExpressReqWrapper__(handle) {
   return function (options) {
     let result = null;
     if (typeof handle === 'function') {
-      const { body, type, url, headers } = options;
+      const { body, type, url } = options;
       result = handle({
         method: type,
         body: JSON.parse(body),
         query: __param2Obj__(url),
-        headers
       });
     } else {
       result = handle;

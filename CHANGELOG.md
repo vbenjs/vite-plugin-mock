@@ -1,3 +1,13 @@
+# [2.6.0](https://github.com/anncwb/vite-plugin-mock/compare/v2.5.0...v2.6.0) (2021-05-29)
+
+### Bug Fixes
+
+- loss request headers in PROD mode ([#23](https://github.com/anncwb/vite-plugin-mock/issues/23)) ([76302df](https://github.com/anncwb/vite-plugin-mock/commit/76302df9cc5a23fe0ccd001787bffbb4c012cc83)), closes [#15](https://github.com/anncwb/vite-plugin-mock/issues/15)
+
+### Reverts
+
+- revert 2.5.0, fix [#22](https://github.com/anncwb/vite-plugin-mock/issues/22) ([d5ac0d6](https://github.com/anncwb/vite-plugin-mock/commit/d5ac0d68a67f4e4cc568ef1eff12f2ba425553e8))
+
 # [2.5.0](https://github.com/anncwb/vite-plugin-mock/compare/v2.4.0...v2.5.0) (2021-04-06)
 
 ### Bug Fixes
