@@ -48,6 +48,7 @@ export async function requestMiddleware(opt: ViteMockOptions) {
     }
 
     const reqUrl = isGet ? queryParams.pathname : req.url;
+
     const matchRequest = mockData.find((item) => {
       if (!reqUrl || !item || !item.url) {
         return false;
@@ -182,6 +183,7 @@ async function getMockConfig(opt: ViteMockOptions) {
       }
       return true;
     });
+
   try {
     ret = [];
     const resolveModulePromiseList = [];
@@ -192,7 +194,6 @@ async function getMockConfig(opt: ViteMockOptions) {
     }
 
     const loadAllResult = await Promise.all(resolveModulePromiseList);
-
     for (const resultModule of loadAllResult) {
       let mod = resultModule;
       if (!isArray(mod)) {
@@ -209,18 +210,19 @@ async function getMockConfig(opt: ViteMockOptions) {
 
 // Inspired by vite
 // support mock .ts files
-async function resolveModule(path: string): Promise<any> {
+async function resolveModule(p: string): Promise<any> {
   const result = await build({
-    entryPoints: [path],
+    entryPoints: [p],
     outfile: 'out.js',
     write: false,
     platform: 'node',
     bundle: true,
     format: 'cjs',
+    metafile: true,
+    target: 'es2015',
   });
   const { text } = result.outputFiles[0];
-
-  return await loadConfigFromBundledFile(path, text);
+  return await loadConfigFromBundledFile(p, text);
 }
 
 // get custom config file path and mock dir path
@@ -246,7 +248,9 @@ function loggerOutput(title: string, msg: string, type: 'info' | 'error' = 'info
 // Parse file content
 export async function loadConfigFromBundledFile(fileName: string, bundledCode: string) {
   const extension = path.extname(fileName);
+
   const defaultLoader = require.extensions[extension]!;
+
   require.extensions[extension] = (module: NodeModule, filename: string) => {
     if (filename === fileName) {
       (module as NodeModuleWithCompile)._compile(bundledCode, filename);
@@ -259,9 +263,13 @@ export async function loadConfigFromBundledFile(fileName: string, bundledCode: s
     delete require.cache[fileName];
     const raw = require(fileName);
     config = raw.__esModule ? raw.default : raw;
-    require.extensions[extension] = defaultLoader;
-    // eslint-disable-next-line
-  } catch (error) {}
+
+    if (defaultLoader) {
+      require.extensions[extension] = defaultLoader;
+    }
+  } catch (error) {
+    console.error(error);
+  }
 
   return config;
 }
