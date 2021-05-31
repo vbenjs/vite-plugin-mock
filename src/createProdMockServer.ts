@@ -1,5 +1,6 @@
 /* eslint-disable */
 import mockJs from 'mockjs';
+import { pathToRegexp } from 'path-to-regexp';
 
 const Mock = mockJs as any;
 export function createProdMockServer(mockList: any[]) {
@@ -36,7 +37,11 @@ export function createProdMockServer(mockList: any[]) {
 
   for (const { url, method, response, timeout } of mockList) {
     __setupMock__(timeout);
-    Mock.mock(new RegExp(url), method || 'get', __XHR2ExpressReqWrapper__(response));
+    Mock.mock(
+      pathToRegexp(url, undefined, { end: false }),
+      method || 'get',
+      __XHR2ExpressReqWrapper__(response)
+    );
   }
 }
 
