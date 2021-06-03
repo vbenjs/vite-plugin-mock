@@ -80,7 +80,7 @@ export async function requestMiddleware(opt: ViteMockOptions) {
       } else {
         const body = await parseJson(req);
         const mockResponse = isFunction(response)
-          ? response({ body, query, headers: req.headers })
+          ? response({ url: req.url, body, query, headers: req.headers })
           : response;
         res.setHeader('Content-Type', 'application/json');
         res.statusCode = statusCode || 200;

@@ -22,7 +22,7 @@ export declare interface MockMethod {
   method?: MethodType;
   timeout?: number;
   statusCode?: number;
-  response?: ((opt: { body: Recordable; query: Recordable; headers: Recordable }) => any) | any;
+  response?: ((opt: { url: Recordable, body: Recordable; query: Recordable; headers: Recordable }) => any) | any;
   rawResponse?: (req: IncomingMessage, res: ServerResponse) => void;
 }
 
