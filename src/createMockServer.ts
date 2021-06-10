@@ -179,11 +179,10 @@ async function getMockConfig(opt: ViteMockOptions) {
         return ignore(item);
       }
       if (isRegExp(ignore)) {
-        return !ignore.test(item);
+        return !ignore.test(path.basename(item));
       }
       return true;
     });
-
   try {
     ret = [];
     const resolveModulePromiseList = [];
