@@ -1,3 +1,22 @@
+# [2.8.0](https://github.com/anncwb/vite-plugin-mock/compare/v2.5.0...v2.8.0) (2021-06-16)
+
+### Bug Fixes
+
+- ensure that the post with parameters are matched,fix [#29](https://github.com/anncwb/vite-plugin-mock/issues/29) ([bfed256](https://github.com/anncwb/vite-plugin-mock/commit/bfed256bff42e2348b30a6b31746854b18fc90b8))
+- improve path matching logic, fix [#25](https://github.com/anncwb/vite-plugin-mock/issues/25) ([5079e4b](https://github.com/anncwb/vite-plugin-mock/commit/5079e4ba1c713aaba2facc87dfb289ea0916c231))
+- loss request headers in PROD mode ([#23](https://github.com/anncwb/vite-plugin-mock/issues/23)) ([76302df](https://github.com/anncwb/vite-plugin-mock/commit/76302df9cc5a23fe0ccd001787bffbb4c012cc83)), closes [#15](https://github.com/anncwb/vite-plugin-mock/issues/15)
+- make sure ignore matches the file correctly ([b612a09](https://github.com/anncwb/vite-plugin-mock/commit/b612a0934b7dcaae423450a56139cc9b9749c43e))
+- support node12 ([fdfed60](https://github.com/anncwb/vite-plugin-mock/commit/fdfed60b6d8859bdcf8292c30859101f47d758b5))
+
+### Features
+
+- remove supportTs, change to automatic judgment ([a341c7d](https://github.com/anncwb/vite-plugin-mock/commit/a341c7d5b2de153593c0d1f5dab00b1b730a6819))
+- response return url ([#27](https://github.com/anncwb/vite-plugin-mock/issues/27)) ([de9ed27](https://github.com/anncwb/vite-plugin-mock/commit/de9ed276b61c18cdfe0509df21921bc3ddf9d767))
+
+### Reverts
+
+- revert 2.5.0, fix [#22](https://github.com/anncwb/vite-plugin-mock/issues/22) ([d5ac0d6](https://github.com/anncwb/vite-plugin-mock/commit/d5ac0d68a67f4e4cc568ef1eff12f2ba425553e8))
+
 ## [2.7.2](https://github.com/anncwb/vite-plugin-mock/compare/v2.5.0...v2.7.2) (2021-06-10)
 
 ### Bug Fixes
