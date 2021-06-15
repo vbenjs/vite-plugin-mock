@@ -9,6 +9,9 @@ export interface ViteMockOptions {
   prodEnabled?: boolean;
   injectFile?: string;
   injectCode?: string;
+  /**
+   * @deprecated Deprecated after 2.8.0
+   */
   supportTs?: boolean;
   logger?: boolean;
 }
@@ -22,7 +25,9 @@ export declare interface MockMethod {
   method?: MethodType;
   timeout?: number;
   statusCode?: number;
-  response?: ((opt: { url: Recordable, body: Recordable; query: Recordable; headers: Recordable }) => any) | any;
+  response?:
+    | ((opt: { url: Recordable; body: Recordable; query: Recordable; headers: Recordable }) => any)
+    | any;
   rawResponse?: (req: IncomingMessage, res: ServerResponse) => void;
 }
 

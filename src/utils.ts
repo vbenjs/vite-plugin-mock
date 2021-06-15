@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 const toString = Object.prototype.toString;
 
 export function is(val: unknown, type: string) {
@@ -23,4 +25,13 @@ export function sleep(time: number) {
       resolve('');
     }, time);
   });
+}
+
+export function fileExists(f: string) {
+  try {
+    fs.accessSync(f, fs.constants.W_OK);
+    return true;
+  } catch (error) {
+    return false;
+  }
 }

@@ -8,16 +8,25 @@
 
 import type { ViteMockOptions } from './types';
 import type { Plugin } from 'vite';
-
 import path from 'path';
+import { fileExists } from './utils';
 import { ResolvedConfig, normalizePath } from 'vite';
 import { createMockServer, requestMiddleware } from './createMockServer';
 
+function getDefaultPath(supportTs = true) {
+  return path.resolve(process.cwd(), `src/main.${supportTs ? 'ts' : 'js'}`);
+}
+
 export function viteMockServe(opt: ViteMockOptions): Plugin {
-  const { supportTs = true } = opt;
-  const defaultEnter = normalizePath(
-    path.resolve(process.cwd(), `src/main.${supportTs ? 'ts' : 'js'}`)
-  );
+  let defaultPath = getDefaultPath();
+  if (!fileExists(defaultPath)) {
+    defaultPath = getDefaultPath(false);
+    if (!fileExists(defaultPath)) {
+      throw new Error('vite-plugin-vue-mock need to set the entry file.');
+    }
+  }
+
+  const defaultEnter = normalizePath(defaultPath);
   const { injectFile = defaultEnter } = opt;
 
   let isDev = false;

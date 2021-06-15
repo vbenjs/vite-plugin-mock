@@ -157,7 +157,7 @@ function parseJson(req: IncomingMessage): Promise<Recordable> {
 async function getMockConfig(opt: ViteMockOptions) {
   cleanRequireCache(opt);
   const { absConfigPath, absMockPath } = getPath(opt);
-  const { ignore, configPath, supportTs, logger } = opt;
+  const { ignore, configPath, logger } = opt;
 
   let ret: MockMethod[] = [];
 
@@ -168,7 +168,7 @@ async function getMockConfig(opt: ViteMockOptions) {
   }
 
   const mockFiles = fg
-    .sync(`**/*.${supportTs ? 'ts' : 'js'}`, {
+    .sync(`**/*.{ts,js}`, {
       cwd: absMockPath,
     })
     .filter((item) => {

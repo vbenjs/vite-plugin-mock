@@ -8,8 +8,6 @@ export default ({ command }) => {
     plugins: [
       vue(),
       viteMockServe({
-        // close support .ts file
-        supportTs: false,
         // default
         mockPath: 'mock',
         localEnabled: command === 'serve',
