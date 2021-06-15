@@ -42,12 +42,11 @@ export async function requestMiddleware(opt: ViteMockOptions) {
       pathname?: string | null;
     } = {};
 
-    const isGet = req.method && req.method.toUpperCase() === 'GET';
-    if (isGet && req.url) {
+    if (req.url) {
       queryParams = url.parse(req.url, true);
     }
 
-    const reqUrl = isGet ? queryParams.pathname : req.url;
+    const reqUrl = queryParams.pathname;
 
     const matchRequest = mockData.find((item) => {
       if (!reqUrl || !item || !item.url) {
@@ -60,6 +59,7 @@ export async function requestMiddleware(opt: ViteMockOptions) {
     });
 
     if (matchRequest) {
+      const isGet = req.method && req.method.toUpperCase() === 'GET';
       const { response, rawResponse, timeout, statusCode, url } = matchRequest;
 
       if (timeout) {
@@ -71,7 +71,12 @@ export async function requestMiddleware(opt: ViteMockOptions) {
       let query = queryParams.query;
       if (reqUrl) {
         if ((isGet && JSON.stringify(query) === '{}') || !isGet) {
-          query = (urlMatch(reqUrl) as any).params || {};
+          const params = (urlMatch(reqUrl) as any).params;
+          if (JSON.stringify(params) !== '{}') {
+            query = (urlMatch(reqUrl) as any).params || {};
+          } else {
+            query = queryParams.query || {};
+          }
         }
       }
 
