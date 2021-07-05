@@ -131,14 +131,17 @@ function createWatch(opt: ViteMockOptions) {
 }
 
 // clear cache
-// function cleanRequireCache(opt: ViteMockOptions) {
-//   const { absConfigPath, absMockPath } = getPath(opt);
-//   Object.keys(require.cache).forEach((file) => {
-//     if (file === absConfigPath || file.indexOf(absMockPath) > -1) {
-//       delete require.cache[file];
-//     }
-//   });
-// }
+function cleanRequireCache(opt: ViteMockOptions) {
+  if (!require || !require.cache) {
+    return;
+  }
+  const { absConfigPath, absMockPath } = getPath(opt);
+  Object.keys(require.cache).forEach((file) => {
+    if (file === absConfigPath || file.indexOf(absMockPath) > -1) {
+      delete require.cache[file];
+    }
+  });
+}
 
 function parseJson(req: IncomingMessage): Promise<Recordable> {
   return new Promise((resolve) => {
@@ -161,7 +164,7 @@ function parseJson(req: IncomingMessage): Promise<Recordable> {
 
 // load mock .ts files and watch
 async function getMockConfig(opt: ViteMockOptions) {
-  // cleanRequireCache(opt);
+  cleanRequireCache(opt);
   const { absConfigPath, absMockPath } = getPath(opt);
   const { ignore, configPath, logger } = opt;
 
@@ -254,31 +257,35 @@ function loggerOutput(title: string, msg: string, type: 'info' | 'error' = 'info
 // Parse file content
 export async function loadConfigFromBundledFile(fileName: string, bundledCode: string) {
   const extension = path.extname(fileName);
+
   // @ts-expect-error
   const extensions = module.Module._extensions;
   let defaultLoader: any;
   const isJs = extension === '.js';
   if (isJs) {
-    defaultLoader = require.extensions[extension]!;
+    defaultLoader = extensions[extension]!;
   }
 
   extensions[extension] = (module: NodeModule, filename: string) => {
     if (filename === fileName) {
       (module as NodeModuleWithCompile)._compile(bundledCode, filename);
     } else {
-      require.extensions[extension]!(module, filename);
-      defaultLoader(module, filename);
+      if (!isJs) {
+        extensions[extension]!(module, filename);
+      } else {
+        defaultLoader(module, filename);
+      }
     }
   };
   let config;
   try {
-    if (isJs) {
+    if (isJs && require && require.cache) {
       delete require.cache[fileName];
     }
     const raw = require(fileName);
     config = raw.__esModule ? raw.default : raw;
     if (defaultLoader && isJs) {
-      require.extensions[extension] = defaultLoader;
+      extensions[extension] = defaultLoader;
     }
   } catch (error) {
     console.error(error);
