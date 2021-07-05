@@ -22,7 +22,7 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
   if (!fileExists(defaultPath)) {
     defaultPath = getDefaultPath(false);
     if (!fileExists(defaultPath)) {
-      throw new Error('vite-plugin-vue-mock need to set the entry file.');
+      defaultPath = '';
     }
   }
 
@@ -53,7 +53,7 @@ export function viteMockServe(opt: ViteMockOptions): Plugin {
     },
 
     async transform(code: string, id: string) {
-      if (isDev || !id.endsWith(injectFile)) {
+      if (isDev || !injectFile || !id.endsWith(injectFile)) {
         return null;
       }
 
