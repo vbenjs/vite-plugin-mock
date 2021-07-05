@@ -11,6 +11,7 @@ import { build } from 'esbuild';
 import { pathToRegexp, match } from 'path-to-regexp';
 import { isArray, isFunction, sleep, isRegExp } from './utils';
 import { IncomingMessage, NextHandleFunction } from 'connect';
+import module from 'module';
 
 export let mockData: MockMethod[] = [];
 
@@ -130,14 +131,14 @@ function createWatch(opt: ViteMockOptions) {
 }
 
 // clear cache
-function cleanRequireCache(opt: ViteMockOptions) {
-  const { absConfigPath, absMockPath } = getPath(opt);
-  Object.keys(require.cache).forEach((file) => {
-    if (file === absConfigPath || file.indexOf(absMockPath) > -1) {
-      delete require.cache[file];
-    }
-  });
-}
+// function cleanRequireCache(opt: ViteMockOptions) {
+//   const { absConfigPath, absMockPath } = getPath(opt);
+//   Object.keys(require.cache).forEach((file) => {
+//     if (file === absConfigPath || file.indexOf(absMockPath) > -1) {
+//       delete require.cache[file];
+//     }
+//   });
+// }
 
 function parseJson(req: IncomingMessage): Promise<Recordable> {
   return new Promise((resolve) => {
@@ -160,7 +161,7 @@ function parseJson(req: IncomingMessage): Promise<Recordable> {
 
 // load mock .ts files and watch
 async function getMockConfig(opt: ViteMockOptions) {
-  cleanRequireCache(opt);
+  // cleanRequireCache(opt);
   const { absConfigPath, absMockPath } = getPath(opt);
   const { ignore, configPath, logger } = opt;
 
@@ -226,6 +227,7 @@ async function resolveModule(p: string): Promise<any> {
     target: 'es2015',
   });
   const { text } = result.outputFiles[0];
+
   return await loadConfigFromBundledFile(p, text);
 }
 
@@ -252,23 +254,30 @@ function loggerOutput(title: string, msg: string, type: 'info' | 'error' = 'info
 // Parse file content
 export async function loadConfigFromBundledFile(fileName: string, bundledCode: string) {
   const extension = path.extname(fileName);
+  // @ts-expect-error
+  const extensions = module.Module._extensions;
+  let defaultLoader: any;
+  const isJs = extension === '.js';
+  if (isJs) {
+    defaultLoader = require.extensions[extension]!;
+  }
 
-  const defaultLoader = require.extensions[extension]!;
-
-  require.extensions[extension] = (module: NodeModule, filename: string) => {
+  extensions[extension] = (module: NodeModule, filename: string) => {
     if (filename === fileName) {
       (module as NodeModuleWithCompile)._compile(bundledCode, filename);
     } else {
+      require.extensions[extension]!(module, filename);
       defaultLoader(module, filename);
     }
   };
   let config;
   try {
-    delete require.cache[fileName];
+    if (isJs) {
+      delete require.cache[fileName];
+    }
     const raw = require(fileName);
     config = raw.__esModule ? raw.default : raw;
-
-    if (defaultLoader) {
+    if (defaultLoader && isJs) {
       require.extensions[extension] = defaultLoader;
     }
   } catch (error) {
