@@ -7,6 +7,9 @@
     "dist",
     "es"
   ],
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "scripts": {
     "clean": "rimraf dist && rimraf es",
     "dev": " tsup src/index.ts --dts --format cjs,esm --watch",
