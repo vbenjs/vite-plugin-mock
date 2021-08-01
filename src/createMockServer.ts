@@ -132,7 +132,7 @@ function createWatch(opt: ViteMockOptions) {
 
 // clear cache
 function cleanRequireCache(opt: ViteMockOptions) {
-  if (!require || !require.cache) {
+  if (!require.cache) {
     return;
   }
   const { absConfigPath, absMockPath } = getPath(opt);
