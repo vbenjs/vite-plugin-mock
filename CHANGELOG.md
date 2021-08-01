@@ -1,3 +1,12 @@
+## [2.9.4](https://github.com/anncwb/vite-plugin-mock/compare/v2.9.0...v2.9.4) (2021-08-01)
+
+### Bug Fixes
+
+- can't update in real time, fix [#40](https://github.com/anncwb/vite-plugin-mock/issues/40) ([f25c6ac](https://github.com/anncwb/vite-plugin-mock/commit/f25c6ac8544991457368746bf6ec5fdfd8b4e083))
+- error handle, fix [#39](https://github.com/anncwb/vite-plugin-mock/issues/39) ([874318c](https://github.com/anncwb/vite-plugin-mock/commit/874318ce399dc78c33d91161b73e3ced7bb6e9b6))
+- fix js parsing error ([1dbee45](https://github.com/anncwb/vite-plugin-mock/commit/1dbee452ec7d90b07ac86ce8530430e864589ab5))
+- fix node version ([#38](https://github.com/anncwb/vite-plugin-mock/issues/38)) ([f91dea1](https://github.com/anncwb/vite-plugin-mock/commit/f91dea1be943aa1145727bfecd273ef45cdff8e9))
+
 ## [2.9.3](https://github.com/anncwb/vite-plugin-mock/compare/v2.5.0...v2.9.3) (2021-07-18)
 
 ### Bug Fixes
