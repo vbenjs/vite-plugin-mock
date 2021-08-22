@@ -16,6 +16,12 @@ export interface ViteMockOptions {
   logger?: boolean;
 }
 
+export interface RespThisType {
+  req: IncomingMessage;
+  res: ServerResponse;
+  parseJson: () => any;
+}
+
 export type MethodType = 'get' | 'post' | 'put' | 'delete' | 'patch';
 
 export type Recordable<T = any> = Record<string, T>;
@@ -26,9 +32,12 @@ export declare interface MockMethod {
   timeout?: number;
   statusCode?: number;
   response?:
-    | ((opt: { url: Recordable; body: Recordable; query: Recordable; headers: Recordable }) => any)
+    | ((
+        this: RespThisType,
+        opt: { url: Recordable; body: Recordable; query: Recordable; headers: Recordable }
+      ) => any)
     | any;
-  rawResponse?: (req: IncomingMessage, res: ServerResponse) => void;
+  rawResponse?: (this: RespThisType, req: IncomingMessage, res: ServerResponse) => void;
 }
 
 export interface NodeModuleWithCompile extends NodeModule {

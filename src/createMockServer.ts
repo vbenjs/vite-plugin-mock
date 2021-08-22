@@ -1,4 +1,10 @@
-import type { ViteMockOptions, MockMethod, NodeModuleWithCompile, Recordable } from './types';
+import type {
+  ViteMockOptions,
+  MockMethod,
+  NodeModuleWithCompile,
+  Recordable,
+  RespThisType,
+} from './types';
 
 import path from 'path';
 import fs from 'fs';
@@ -81,15 +87,16 @@ export async function requestMiddleware(opt: ViteMockOptions) {
         }
       }
 
+      const self: RespThisType = { req, res, parseJson: parseJson.bind(null, req) };
       if (isFunction(rawResponse)) {
-        await rawResponse(req, res);
+        await rawResponse.bind(self)(req, res);
       } else {
         const body = await parseJson(req);
-        const mockResponse = isFunction(response)
-          ? response({ url: req.url, body, query, headers: req.headers })
-          : response;
         res.setHeader('Content-Type', 'application/json');
         res.statusCode = statusCode || 200;
+        const mockResponse = isFunction(response)
+          ? response.bind(self)({ url: req.url, body, query, headers: req.headers })
+          : response;
         res.end(JSON.stringify(Mock.mock(mockResponse)));
       }
 
