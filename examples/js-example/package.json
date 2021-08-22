@@ -2,19 +2,19 @@
   "name": "ts-example",
   "version": "0.0.0",
   "scripts": {
-    "serve": "cross-env NODE_ENV=development vite",
+    "dev": "cross-env NODE_ENV=development vite",
     "build": "cross-env NODE_ENV=production vite build "
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "element-plus": "^1.0.2-beta.55",
+    "element-plus": "^1.0.2-beta.71",
     "mockjs": "^1.1.0",
-    "vue": "^3.1.5"
+    "vue": "^3.2.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.2.5",
-    "@vue/compiler-sfc": "^3.1.5",
+    "@vitejs/plugin-vue": "^1.4.0",
+    "@vue/compiler-sfc": "^3.2.4",
     "cross-env": "^7.0.3",
-    "vite": "^2.4.2"
+    "vite": "^2.5.0"
   }
 }

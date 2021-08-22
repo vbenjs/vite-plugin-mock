@@ -10,6 +10,7 @@ export interface ViteMockOptions {
   injectFile?: string;
   injectCode?: string;
   /**
+   * Automatic recognition, no need to configure again
    * @deprecated Deprecated after 2.8.0
    */
   supportTs?: boolean;

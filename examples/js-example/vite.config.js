@@ -1,4 +1,4 @@
-import { viteMockServe } from '../../src';
+import { viteMockServe } from '../../dist';
 
 import vue from '@vitejs/plugin-vue';
 
