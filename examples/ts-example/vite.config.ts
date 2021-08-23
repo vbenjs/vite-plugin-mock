@@ -1,10 +1,10 @@
-import { viteMockServe } from '../../dist/index';
+import { viteMockServe } from '../../dist/index'
 
-import { UserConfigExport, ConfigEnv } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import { UserConfigExport, ConfigEnv } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 export default ({ command }: ConfigEnv): UserConfigExport => {
-  const prodMock = true;
+  const prodMock = true
   return {
     plugins: [
       vue(),
@@ -19,5 +19,5 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         logger: true,
       }),
     ],
-  };
-};
+  }
+}

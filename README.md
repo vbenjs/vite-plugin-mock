@@ -59,10 +59,10 @@ Different from the production environment, you can view the network request reco
 - Config plugin in vite.config.ts
 
 ```ts
-import { UserConfigExport, ConfigEnv } from 'vite';
+import { UserConfigExport, ConfigEnv } from 'vite'
 
-import { viteMockServe } from 'vite-plugin-mock';
-import vue from '@vitejs/plugin-vue';
+import { viteMockServe } from 'vite-plugin-mock'
+import vue from '@vitejs/plugin-vue'
 
 export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
@@ -74,8 +74,8 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         localEnabled: command === 'serve',
       }),
     ],
-  };
-};
+  }
+}
 ```
 
 - viteMockServe Options
@@ -192,7 +192,7 @@ Whether to display the request log on the console
 ```ts
 // test.ts
 
-import { MockMethod } from 'vite-plugin-mock';
+import { MockMethod } from 'vite-plugin-mock'
 export default [
   {
     url: '/api/get',
@@ -203,7 +203,7 @@ export default [
         data: {
           name: 'vben',
         },
-      };
+      }
     },
   },
   {
@@ -221,19 +221,19 @@ export default [
     url: '/api/text',
     method: 'post',
     rawResponse: async (req, res) => {
-      let reqbody = '';
+      let reqbody = ''
       await new Promise((resolve) => {
         req.on('data', (chunk) => {
-          reqbody += chunk;
-        });
-        req.on('end', () => resolve(undefined));
-      });
-      res.setHeader('Content-Type', 'text/plain');
-      res.statusCode = 200;
-      res.end(`hello, ${reqbody}`);
+          reqbody += chunk
+        })
+        req.on('end', () => resolve(undefined))
+      })
+      res.setHeader('Content-Type', 'text/plain')
+      res.statusCode = 200
+      res.end(`hello, ${reqbody}`)
     },
   },
-] as MockMethod[];
+] as MockMethod[]
 ```
 
 ### MockMethod
@@ -263,28 +263,28 @@ Create the `mockProdServer.ts` file
 ```ts
 //  mockProdServer.ts
 
-import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
+import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer'
 
 // Import your mock .ts files one by one
 // If you use vite.mock.config.ts, just import the file directly
 // You can use the import.meta.glob function to import all
-import testModule from '../mock/test';
+import testModule from '../mock/test'
 
 export function setupProdMockServer() {
-  createProdMockServer([...testModule]);
+  createProdMockServer([...testModule])
 }
 ```
 
 Config `vite-plugin-mock`
 
 ```ts
-import { viteMockServe } from 'vite-plugin-mock';
+import { viteMockServe } from 'vite-plugin-mock'
 
-import { UserConfigExport, ConfigEnv } from 'vite';
+import { UserConfigExport, ConfigEnv } from 'vite'
 
 export default ({ command }: ConfigEnv): UserConfigExport => {
   // According to the project configuration. Can be configured in the .env file
-  let prodMock = true;
+  let prodMock = true
   return {
     plugins: [
       viteMockServe({
@@ -297,8 +297,8 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         `,
       }),
     ],
-  };
-};
+  }
+}
 ```
 
 ## Sample project

@@ -3,7 +3,7 @@ export default [
     url: '/api/getRoleById',
     method: 'get',
     response: ({ query }) => {
-      console.log('id>>>>>>>>', query.id);
+      console.log('id>>>>>>>>', query.id)
       return {
         code: 0,
         message: 'ok',
@@ -11,7 +11,7 @@ export default [
           roleName: 'admin',
           roleValue: 'admin',
         },
-      };
+      }
     },
   },
-];
+]

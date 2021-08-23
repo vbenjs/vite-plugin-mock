@@ -1,9 +1,9 @@
-import { viteMockServe } from '../../dist';
+import { viteMockServe } from '../../dist'
 
-import vue from '@vitejs/plugin-vue';
+import vue from '@vitejs/plugin-vue'
 
 export default ({ command }) => {
-  let prodMock = true;
+  let prodMock = true
   return {
     plugins: [
       vue(),
@@ -18,5 +18,5 @@ export default ({ command }) => {
         `,
       }),
     ],
-  };
-};
+  }
+}

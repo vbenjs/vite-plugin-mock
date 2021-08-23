@@ -43,10 +43,10 @@ npm i vite-plugin-mock -D
 - vite.config.ts 配置
 
 ```ts
-import { UserConfigExport, ConfigEnv } from 'vite';
+import { UserConfigExport, ConfigEnv } from 'vite'
 
-import { viteMockServe } from 'vite-plugin-mock';
-import vue from '@vitejs/plugin-vue';
+import { viteMockServe } from 'vite-plugin-mock'
+import vue from '@vitejs/plugin-vue'
 
 export default ({ command }: ConfigEnv): UserConfigExport => {
   return {
@@ -58,8 +58,8 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         localEnabled: command === 'serve',
       }),
     ],
-  };
-};
+  }
+}
 ```
 
 - viteMockServe 配置
@@ -175,7 +175,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 ```ts
 // test.ts
 
-import { MockMethod } from 'vite-plugin-mock';
+import { MockMethod } from 'vite-plugin-mock'
 export default [
   {
     url: '/api/get',
@@ -186,7 +186,7 @@ export default [
         data: {
           name: 'vben',
         },
-      };
+      }
     },
   },
   {
@@ -204,19 +204,19 @@ export default [
     url: '/api/text',
     method: 'post',
     rawResponse: async (req, res) => {
-      let reqbody = '';
+      let reqbody = ''
       await new Promise((resolve) => {
         req.on('data', (chunk) => {
-          reqbody += chunk;
-        });
-        req.on('end', () => resolve(undefined));
-      });
-      res.setHeader('Content-Type', 'text/plain');
-      res.statusCode = 200;
-      res.end(`hello, ${reqbody}`);
+          reqbody += chunk
+        })
+        req.on('end', () => resolve(undefined))
+      })
+      res.setHeader('Content-Type', 'text/plain')
+      res.statusCode = 200
+      res.end(`hello, ${reqbody}`)
     },
   },
-] as MockMethod[];
+] as MockMethod[]
 ```
 
 ### MockMethod
@@ -245,28 +245,28 @@ export default [
 
 ```ts
 //  mockProdServer.ts
-import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer';
+import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer'
 
 // 逐一导入您的mock.ts文件
 // 如果使用vite.mock.config.ts，只需直接导入文件
 // 可以使用 import.meta.glob功能来进行全部导入
-import testModule from '../mock/test';
+import testModule from '../mock/test'
 
 export function setupProdMockServer() {
-  createProdMockServer([...testModule]);
+  createProdMockServer([...testModule])
 }
 ```
 
 配置 `vite-plugin-mock`
 
 ```ts
-import { viteMockServe } from 'vite-plugin-mock';
+import { viteMockServe } from 'vite-plugin-mock'
 
-import { UserConfigExport, ConfigEnv } from 'vite';
+import { UserConfigExport, ConfigEnv } from 'vite'
 
 export default ({ command }: ConfigEnv): UserConfigExport => {
   // 根据项目配置。可以配置在.env文件
-  let prodMock = true;
+  let prodMock = true
   return {
     plugins: [
       viteMockServe({
@@ -280,8 +280,8 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
         `,
       }),
     ],
-  };
-};
+  }
+}
 ```
 
 ### 示例
