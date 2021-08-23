@@ -17,7 +17,7 @@ function getDefaultPath(supportTs = true) {
   return path.resolve(process.cwd(), `src/main.${supportTs ? 'ts' : 'js'}`)
 }
 
-export function viteMockServe(opt: ViteMockOptions): Plugin {
+export function viteMockServe(opt: ViteMockOptions = {}): Plugin {
   let defaultPath = getDefaultPath()
   if (!fileExists(defaultPath)) {
     defaultPath = getDefaultPath(false)
