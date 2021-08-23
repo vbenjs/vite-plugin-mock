@@ -16,14 +16,12 @@
     "dev:client": "tsc -w --p tsconfig.es.json",
     "build": "npm run clean  && tsup src/index.ts --dts --format cjs,esm && tsc -p tsconfig.es.json",
     "log": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "prepublishOnly": "pinst --disable && npm run build",
+    "prepublishOnly": "npm run build",
     "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js",
-    "lint:pretty": "pretty-quick --staged",
     "lint:eslint": "eslint \"src/**/*.{ts,tsx}\" --fix",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
-    "prepare": "husky install",
-    "postpublish": "pinst --enable"
+    "prepare": "husky install"
   },
   "keywords": [
     "vite",
@@ -73,9 +71,7 @@
     "jest": "^27.0.6",
     "lint-staged": "^11.1.2",
     "mockjs": "^1.1.0",
-    "pinst": "^2.1.6",
     "prettier": "^2.3.2",
-    "pretty-quick": "^3.1.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^27.0.5",
     "tsup": "4.8.21",
