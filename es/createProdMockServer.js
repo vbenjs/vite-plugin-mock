@@ -60,6 +60,7 @@ function __XHR2ExpressReqWrapper__(handle) {
     if (typeof handle === 'function') {
       const { body, type, url, headers } = options
       result = handle({
+        url,
         method: type,
         body: JSON.parse(body),
         query: __param2Obj__(url),
