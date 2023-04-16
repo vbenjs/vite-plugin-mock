@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-mock",
-  "version": "2.9.6",
+  "version": "2.9.7",
   "description": "A mock plugin for vite",
   "main": "dist/index.js",
   "files": [
