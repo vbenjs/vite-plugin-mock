@@ -13,14 +13,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: use Node.js 14
+      - name: use Node.js 16
         uses: actions/setup-node@v1
         with:
           registry-url: https://registry.npmjs.org/
-          node-version: 14
+          node-version: 16
 
       - name: pnpm install and publish
         run: |
+          npm i -g pnpm
           pnpm install
           pnpm publish --filter=vite-mock-plugin
 
