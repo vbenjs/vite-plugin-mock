@@ -18,12 +18,18 @@ A mock plugin for vite, developed based on mockjs. And support the local environ
 yarn add mockjs
 # or
 npm i  mockjs -S
+# or
+pnpm add mockjs
 ```
+
+and
 
 ```bash
 yarn add vite-plugin-mock -D
 # or
 npm i vite-plugin-mock -D
+# or
+pnpm add vite-plugin-mock -D
 ```
 
 ### Example
@@ -71,7 +77,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
       viteMockServe({
         // default
         mockPath: 'mock',
-        localEnabled: command === 'serve',
+        enable: true,
       }),
     ],
   }
@@ -83,15 +89,11 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 ```ts
 {
     mockPath?: string;
-    supportTs?: boolean;
     ignore?: RegExp | ((fileName: string) => boolean);
     watchFiles?: boolean;
-    localEnabled?: boolean;
+    enable?: boolean;
     ignoreFiles?: string[];
     configPath?: string;
-    prodEnabled?: boolean;
-    injectFile?: string;
-    injectCode?: string;
 }
 ```
 
@@ -109,14 +111,6 @@ If `watchFiles:true`, the file changes in the folder will be monitored. And sync
 
 If configPath has a value, it is invalid
 
-### supportTs
-
-**type:** `boolean`
-
-**default:** `true`
-
-After opening, the ts file module can be read. Note that you will not be able to monitor .js files after opening.
-
 ### ignore
 
 **type:** `RegExp | ((fileName: string) => boolean);`
@@ -133,41 +127,13 @@ When automatically reading analog .ts files, ignore files in the specified forma
 
 Set whether to monitor changes in mock .ts files
 
-### localEnabled
+### enable
 
 **type:** `boolean`
 
-**default:** `command === 'serve'`
+**default:** true
 
-Set whether to enable the local mock .ts file, do not open it in the production environment
-
-### prodEnabled
-
-**type:** `boolean`
-
-**default:** `command !=='serve'`
-
-Set whether to enable mock function for packaging
-
-### injectCode
-
-**type:** `string`
-
-**default:**''
-
-If the mock function is enabled in the production environment, that is, `prodEnabled=true`, the code will be injected into the bottom of the file corresponding to `injectFile`. The default is `main.{ts,js}`
-
-The advantage of this is that you can dynamically control whether mock is enabled in the production environment and mock.js will not be packaged when it is not enabled.
-
-If the code is written directly in `main.ts`, no matter whether it is turned on or not, the final package will include `mock.js`
-
-### injectFile
-
-**type:** `string`
-
-**default:** `path.resolve(process.cwd(),'src/main.{ts,js}')`
-
-The file injected by `injectCode` code, the default is `src/main.{ts,js}` in the project root directory
+Whether to enable the mock function
 
 ### configPath
 
@@ -192,7 +158,7 @@ Whether to display the request log on the console
 ```ts
 // test.ts
 
-import { MockMethod } from 'vite-plugin-mock'
+import { MockMethod, MockConfig } from 'vite-plugin-mock'
 export default [
   {
     url: '/api/get',
@@ -234,6 +200,27 @@ export default [
     },
   },
 ] as MockMethod[]
+
+export default function (config: MockConfig) {
+  return [
+    {
+      url: '/api/text',
+      method: 'post',
+      rawResponse: async (req, res) => {
+        let reqbody = ''
+        await new Promise((resolve) => {
+          req.on('data', (chunk) => {
+            reqbody += chunk
+          })
+          req.on('end', () => resolve(undefined))
+        })
+        res.setHeader('Content-Type', 'text/plain')
+        res.statusCode = 200
+        res.end(`hello, ${reqbody}`)
+      },
+    },
+  ]
+}
 ```
 
 ### MockMethod
@@ -256,14 +243,14 @@ export default [
 
 ```
 
-### Example (2.0.0 recommended)
+### Example (3.0.0 recommended)
 
 Create the `mockProdServer.ts` file
 
 ```ts
 //  mockProdServer.ts
 
-import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer'
+import { createProdMockServer } from 'vite-plugin-mock/client'
 
 // Import your mock .ts files one by one
 // If you use vite.mock.config.ts, just import the file directly
@@ -283,18 +270,12 @@ import { viteMockServe } from 'vite-plugin-mock'
 import { UserConfigExport, ConfigEnv } from 'vite'
 
 export default ({ command }: ConfigEnv): UserConfigExport => {
-  // According to the project configuration. Can be configured in the .env file
-  let prodMock = true
   return {
     plugins: [
       viteMockServe({
         mockPath: 'mock',
-        localEnabled: command === 'serve',
-        prodEnabled: command !== 'serve' && prodMock,
-        injectCode: `
-          import { setupProdMockServer } from './mockProdServer';
-          setupProdMockServer();
-        `,
+        // According to the project configuration. Can be configured in the .env file
+        enable: true,
       }),
     ],
   }

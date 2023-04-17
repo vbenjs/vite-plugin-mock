@@ -1,3 +1,70 @@
+## [3.0.0]
+
+### Breaking Change
+
+- Remove the `localEnabled` and `prodEnabled` configuration and use the `enable` configuration instead, no longer distinguishing the environment
+- Remove the `injectFile`、`injectCode` and `supportTs` configuration
+- Minimum requirement NodeJs 16
+- Production Environment Syntax Changes
+
+```ts
+// vite-plugin-mock/es/createProdMockServer => vite-plugin-mock/client
+import { createProdMockServer } from 'vite-plugin-mock/client'
+import roleMock from '../mock/dep/role'
+// functional form
+import userMockFn from '../mock/user'
+
+export async function setupProdMockServer() {
+  const mockModules = [...roleMock, ...userMockFn()]
+  createProdMockServer(mockModules)
+}
+```
+
+### Features
+
+- Upgrade all dependencies to latest
+- support `vite4` and `rollup3`
+- The function module supports returning a function
+
+```ts
+import type { MockConfig } from 'vite-plugin-mock'
+
+export default (config?: MockConfig) => {
+  return [
+    {
+      url: '/api/createUser',
+      method: 'post',
+      response: ({ body, query }) => {
+        console.log('body>>>>>>>>', body)
+        console.log('query>>>>>>>>', query)
+
+        return {
+          code: 0,
+          message: 'ok',
+          data: { a: 21, 'import.meta.url': import.meta.url },
+        }
+      },
+    },
+  ]
+}
+```
+
+## [2.9.8](https://github.com/vbenjs/vite-plugin-mock/compare/v2.9.0...v2.9.8) (2023-04-17)
+
+### Bug Fixes
+
+- can't update in real time, fix [#40](https://github.com/vbenjs/vite-plugin-mock/issues/40) ([f25c6ac](https://github.com/vbenjs/vite-plugin-mock/commit/f25c6ac8544991457368746bf6ec5fdfd8b4e083))
+- error handle, fix [#39](https://github.com/vbenjs/vite-plugin-mock/issues/39) ([874318c](https://github.com/vbenjs/vite-plugin-mock/commit/874318ce399dc78c33d91161b73e3ced7bb6e9b6))
+- fix js parsing error ([1dbee45](https://github.com/vbenjs/vite-plugin-mock/commit/1dbee452ec7d90b07ac86ce8530430e864589ab5))
+- fix node version ([#38](https://github.com/vbenjs/vite-plugin-mock/issues/38)) ([f91dea1](https://github.com/vbenjs/vite-plugin-mock/commit/f91dea1be943aa1145727bfecd273ef45cdff8e9))
+- inappropriate type annotation ([#90](https://github.com/vbenjs/vite-plugin-mock/issues/90)) ([a3fc4aa](https://github.com/vbenjs/vite-plugin-mock/commit/a3fc4aab3dd1864f640918516c10d7d1530f5d90))
+- typo, close [#42](https://github.com/vbenjs/vite-plugin-mock/issues/42) ([5b4e946](https://github.com/vbenjs/vite-plugin-mock/commit/5b4e9469060109a2a28c079eec8384fe654be68e))
+
+### Features
+
+- **prod:** response 在 prod 模式下入参对象加上 url ([#83](https://github.com/vbenjs/vite-plugin-mock/issues/83)) ([cd0b86f](https://github.com/vbenjs/vite-plugin-mock/commit/cd0b86fce20228094cf18be14194498a2cbd490e))
+- **server:** add this for response, rawResponse function ([#43](https://github.com/vbenjs/vite-plugin-mock/issues/43)) ([2f4d6d2](https://github.com/vbenjs/vite-plugin-mock/commit/2f4d6d2984c7fe15236cb8b0d2ec5479930d5668))
+
 ## [2.9.8](https://github.com/anncwb/vite-plugin-mock/compare/v2.9.0...v2.9.8) (2023-04-16)
 
 ### Bug Fixes

@@ -22,6 +22,8 @@ The current production environment cannot support the acquisition of `headers` a
 yarn add mockjs
 # or
 npm i  mockjs -S
+# or
+pnpm add mockjs
 ```
 
 and
@@ -30,6 +32,8 @@ and
 yarn add vite-plugin-mock -D
 # or
 npm i vite-plugin-mock -D
+# or
+pnpm add vite-plugin-mock -D
 ```
 
 ## 使用
@@ -53,9 +57,8 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
     plugins: [
       vue(),
       viteMockServe({
-        // default
         mockPath: 'mock',
-        localEnabled: command === 'serve',
+        enable: true,
       }),
     ],
   }
@@ -67,15 +70,11 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 ```ts
 {
     mockPath?: string;
-    supportTs?: boolean;
     ignore?: RegExp | ((fileName: string) => boolean);
     watchFiles?: boolean;
-    localEnabled?: boolean;
+    enable?: boolean;
     ignoreFiles?: string[];
     configPath?: string;
-    prodEnabled?: boolean;
-    injectFile?: string;
-    injectCode?: string;
     logger?:boolean;
 }
 ```
@@ -91,14 +90,6 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 如果`watchFiles：true`，将监视文件夹中的文件更改。 并实时同步到请求结果
 
 如果 `configPath` 具有值，则无效
-
-### supportTs
-
-**type:** boolean
-
-**default:** `true`
-
-打开后，可以读取 ts 文件模块。 请注意，打开后将无法监视.js 文件。
 
 ### ignore
 
@@ -116,41 +107,13 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 
 设置是否监视`mockPath`对应的文件夹内文件中的更改
 
-### localEnabled
+### enable
 
 **type:** `boolean`
 
-**default:** `command === 'serve'`
+**default:** true
 
-设置是否启用本地` xxx.ts` 文件，不要在生产环境中打开它.设置为 `false` 将禁用 mock 功能
-
-### prodEnabled
-
-**type:** `boolean`
-
-**default:** `command !== 'serve'`
-
-设置打包是否启用 mock 功能
-
-### injectCode
-
-**type:** `string`
-
-**default:** ''
-
-如果生产环境开启了 mock 功能,即`prodEnabled=true`.则该代码会被注入到`injectFile`对应的文件的底部。默认为`main.{ts,js}`
-
-这样做的好处是,可以动态控制生产环境是否开启 mock 且在没有开启的时候 mock.js 不会被打包。
-
-如果代码直接写在`main.ts`内，则不管有没有开启,最终的打包都会包含`mock.js`
-
-### injectFile
-
-**type:** `string`
-
-**default:** `path.resolve(process.cwd(), 'src/main.{ts,js}')`
-
-`injectCode`代码注入的文件,默认为项目根目录下`src/main.{ts,js}`
+是否启用 mock 功能
 
 ### configPath
 
@@ -175,7 +138,7 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 ```ts
 // test.ts
 
-import { MockMethod } from 'vite-plugin-mock'
+import { MockMethod, MockConfig } from 'vite-plugin-mock'
 export default [
   {
     url: '/api/get',
@@ -217,6 +180,27 @@ export default [
     },
   },
 ] as MockMethod[]
+
+export default function (config: MockConfig) {
+  return [
+    {
+      url: '/api/text',
+      method: 'post',
+      rawResponse: async (req, res) => {
+        let reqbody = ''
+        await new Promise((resolve) => {
+          req.on('data', (chunk) => {
+            reqbody += chunk
+          })
+          req.on('end', () => resolve(undefined))
+        })
+        res.setHeader('Content-Type', 'text/plain')
+        res.statusCode = 200
+        res.end(`hello, ${reqbody}`)
+      },
+    },
+  ]
+}
 ```
 
 ### MockMethod
@@ -245,7 +229,7 @@ export default [
 
 ```ts
 //  mockProdServer.ts
-import { createProdMockServer } from 'vite-plugin-mock/es/createProdMockServer'
+import { createProdMockServer } from 'vite-plugin-mock/client'
 
 // 逐一导入您的mock.ts文件
 // 如果使用vite.mock.config.ts，只需直接导入文件
@@ -265,19 +249,12 @@ import { viteMockServe } from 'vite-plugin-mock'
 import { UserConfigExport, ConfigEnv } from 'vite'
 
 export default ({ command }: ConfigEnv): UserConfigExport => {
-  // 根据项目配置。可以配置在.env文件
-  let prodMock = true
   return {
     plugins: [
       viteMockServe({
         mockPath: 'mock',
-        localEnabled: command === 'serve',
-        prodEnabled: command !== 'serve' && prodMock,
-        //  这样可以控制关闭mock的时候不让mock打包到最终代码内
-        injectCode: `
-          import { setupProdMockServer } from './mockProdServer';
-          setupProdMockServer();
-        `,
+        // 根据项目配置。可以配置在.env文件
+        enable: true,
       }),
     ],
   }
@@ -289,21 +266,18 @@ export default ({ command }: ConfigEnv): UserConfigExport => {
 **运行示例**
 
 ```bash
+pnpm install
 
 # ts example
 cd ./examples/ts-examples
 
-yarn install
-
-yarn serve
+pnpm run serve
 
 # js example
 
 cd ./examples/js-examples
 
-yarn install
-
-yarn serve
+pnpm run serve
 ```
 
 ## 示例项目

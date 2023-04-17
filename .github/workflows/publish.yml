@@ -23,7 +23,7 @@ jobs:
         run: |
           npm i -g pnpm
           pnpm install
-          pnpm publish --filter=vite-mock-plugin
+          pnpm publish --filter=./packages/vite-plugin-mock
 
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
