@@ -1,8 +1,8 @@
 {
-  "name": "vite-plugin-mock",
+  "name": "vite-plugin-mock-monorepo",
   "version": "2.9.8",
+  "private": true,
   "description": "A mock plugin for vite",
-  "main": "dist/index.js",
   "files": [
     "dist",
     "es"
@@ -11,16 +11,9 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "clean": "rimraf dist && rimraf es",
-    "dev": " tsup src/index.ts --dts --format cjs,esm --watch",
-    "dev:client": "tsc -w --p tsconfig.es.json",
-    "build": "npm run clean  && tsup src/index.ts --dts --format cjs,esm && tsc -p tsconfig.es.json",
     "log": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "prepublishOnly": "npm run build",
     "lint:lint-staged": "lint-staged -c ./.husky/lintstagedrc.js",
     "lint:eslint": "eslint \"src/**/*.{ts,tsx}\" --fix",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch",
     "prepare": "husky install"
   },
   "keywords": [
@@ -30,51 +23,22 @@
   ],
   "author": "Vben",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/anncwb/vite-plugin-mock"
-  },
-  "bugs": {
-    "url": "https://github.com/anncwb/vite-plugin-mock/issues"
-  },
-  "homepage": "https://github.com/anncwb/vite-plugin-mock/tree/master/#readme",
-  "dependencies": {
-    "@types/mockjs": "^1.0.4",
-    "chalk": "^4.1.2",
-    "chokidar": "^3.5.2",
-    "connect": "^3.7.0",
-    "debug": "^4.3.2",
-    "esbuild": "^0.14.36",
-    "fast-glob": "^3.2.7",
-    "path-to-regexp": "^6.2.0"
-  },
-  "peerDependencies": {
-    "mockjs": ">=1.1.0",
-    "vite": ">=2.0.0"
-  },
   "devDependencies": {
-    "@commitlint/cli": "^13.1.0",
-    "@commitlint/config-conventional": "^13.1.0",
+    "@commitlint/cli": "^17.6.1",
+    "@commitlint/config-conventional": "^17.6.1",
     "@types/connect": "^3.4.35",
     "@types/debug": "^4.1.7",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.1",
-    "@typescript-eslint/eslint-plugin": "^4.29.2",
-    "@typescript-eslint/parser": "^4.29.2",
-    "commitizen": "^4.2.4",
-    "conventional-changelog-cli": "^2.1.1",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-jest": "^24.4.0",
-    "husky": "^7.0.1",
-    "jest": "^27.0.6",
-    "lint-staged": "^11.1.2",
-    "mockjs": "^1.1.0",
-    "prettier": "^2.3.2",
-    "rimraf": "^3.0.2",
-    "ts-jest": "^27.0.5",
-    "tsup": "4.8.21",
-    "typescript": "^4.3.5",
-    "vite": "2.1.5"
+    "@types/node": "^16.18.23",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "commitizen": "^4.3.0",
+    "conventional-changelog-cli": "^2.2.2",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.1",
+    "prettier": "^2.8.7",
+    "rimraf": "^5.0.0",
+    "typescript": "^5.0.4"
   }
 }

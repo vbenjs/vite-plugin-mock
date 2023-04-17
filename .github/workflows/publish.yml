@@ -19,10 +19,10 @@ jobs:
           registry-url: https://registry.npmjs.org/
           node-version: 14
 
-      - name: npm install and publish
+      - name: pnpm install and publish
         run: |
-          npm install
-          npm publish
+          pnpm install
+          pnpm publish --filter=vite-mock-plugin
 
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

@@ -10,7 +10,6 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended',
-    'plugin:jest/recommended',
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
@@ -18,7 +17,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'jest'],
+  plugins: ['@typescript-eslint'],
   rules: {
     'no-console': 'off',
     '@typescript-eslint/no-var-requires': 'off',

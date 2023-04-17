@@ -5,5 +5,5 @@
     "outDir": "es"
   },
   "include": ["./src/createProdMockServer.ts"],
-  "exclude": []
+  "exclude": ["**/dist/**", "**/node_modules/**"]
 }
