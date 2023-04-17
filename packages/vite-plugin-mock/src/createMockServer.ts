@@ -133,7 +133,7 @@ function createWatch(opt: ViteMockOptions, config: ResolvedConfig) {
 
 // clear cache
 function cleanRequireCache(opt: ViteMockOptions) {
-  if (!require.cache) {
+  if (typeof require === 'undefined' || !require.cache) {
     return
   }
   const { absConfigPath, absMockPath } = getPath(opt)
