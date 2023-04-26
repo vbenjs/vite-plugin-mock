@@ -13,6 +13,11 @@ import { IncomingMessage, NextHandleFunction } from 'connect'
 import { bundleRequire } from 'bundle-require'
 import type { ResolvedConfig } from 'vite'
 
+/**
+ * item format like `${url}+${method}`
+ */
+export const excludeMock = new Set<string>()
+
 export let mockData: MockMethod[] = []
 
 export async function createMockServer(
@@ -50,6 +55,10 @@ export async function requestMiddleware(opt: ViteMockOptions) {
     const reqUrl = queryParams.pathname
 
     const matchRequest = mockData.find((item) => {
+      // filter
+      if (excludeMock.has(`${item.url}+${item.method || 'get'}`)) {
+        return false
+      }
       if (!reqUrl || !item || !item.url) {
         return false
       }
@@ -144,7 +153,7 @@ function cleanRequireCache(opt: ViteMockOptions) {
   })
 }
 
-function parseJson(req: IncomingMessage): Promise<Recordable> {
+export function parseJson(req: IncomingMessage): Promise<Recordable> {
   return new Promise((resolve) => {
     let body = ''
     let jsonStr = ''
