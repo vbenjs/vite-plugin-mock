@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { watch, computed, ref } from 'vue';
+import ky from 'ky'
+import { watch, computed, ref } from 'vue'
 import { useMockList } from './hooks/useMockList'
-import { useFetch } from '@vueuse/core';
 
 const { mockList } = useMockList()
 
@@ -18,8 +18,10 @@ const excludeUrl = computed(()=>{
 })
 
 watch(() => excludeUrl.value, () => {
-  useFetch('./exclude').post( {
-    "urlList": excludeUrl.value
+  ky.post('./exclude', {
+    json: {
+      "urlList": excludeUrl.value
+    }
   })
 })
 
