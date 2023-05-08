@@ -6,10 +6,14 @@ import { MockObj, useMockList } from './hooks/useMockList'
 const { mockList, getList } = useMockList()
 
 const filterPath = ref('')
+const filterMedth = ref(null as unknown as MockObj['method'])
 
 const filterMockList = computed(()=>{
   return mockList.value.filter(i => {
     return i.url.includes(filterPath.value)
+  }).filter(i => {
+    if(filterMedth.value) return i.method === filterMedth.value
+    return true
   })
 })
 
@@ -62,7 +66,17 @@ async function includeAll() {
   <div class="sticky top-0 z-10 bg-white mb-2">
     <el-form :inline="true">
       <el-form-item label="Filter">
-        <el-input v-model="filterPath" placeholder="Input Path" clearable></el-input>
+        <span>
+          <el-input v-model="filterPath" placeholder="Input Path" clearable></el-input>
+        </span>
+        <span class="ml-2">
+          <el-select v-model="filterMedth" placeholder="Select Method" clearable>
+            <el-option label="get" value="get"></el-option>
+            <el-option label="post" value="post"></el-option>
+            <el-option label="put" value="put"></el-option>
+            <el-option label="delete" value="delete"></el-option>
+          </el-select>
+        </span>
       </el-form-item>
       <el-form-item label="Other">
         <el-button @click="excludeAll">Exclude All</el-button>
