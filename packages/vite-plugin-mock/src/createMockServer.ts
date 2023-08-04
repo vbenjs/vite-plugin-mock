@@ -24,6 +24,7 @@ export async function createMockServer(
     watchFiles: true,
     configPath: 'vite.mock.config.ts',
     logger: true,
+    cors: true,
     ...opt,
   }
 
@@ -87,6 +88,10 @@ export async function requestMiddleware(opt: ViteMockOptions) {
       } else {
         const body = await parseJson(req)
         res.setHeader('Content-Type', 'application/json')
+        if (opt) {
+          res.setHeader('Access-Control-Allow-Credentials', true)
+          res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*')
+        }
         res.statusCode = statusCode || 200
         const mockResponse = isFunction(response)
           ? response.bind(self)({ url: req.url as any, body, query, headers: req.headers })
