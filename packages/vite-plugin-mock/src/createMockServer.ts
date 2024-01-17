@@ -133,6 +133,21 @@ function createWatch(opt: ViteMockOptions, config: ResolvedConfig) {
   })
 }
 
+
+// clear cache
+function cleanRequireCache(opt: ViteMockOptions) {
+  if (typeof require === 'undefined' || !require.cache) {
+    return
+  }
+  const { absConfigPath, absMockPath } = getPath(opt)
+  Object.keys(require.cache).forEach((file) => {
+    if (file === absConfigPath || file.indexOf(absMockPath) > -1) {
+      delete require.cache[file]
+    }
+  })
+}
+
+
 function parseJson(req: IncomingMessage): Promise<Recordable> {
   return new Promise((resolve) => {
     let body = ''
