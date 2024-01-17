@@ -7,6 +7,7 @@ export interface ViteMockOptions {
   watchFiles?: boolean
   enable?: boolean
   logger?: boolean
+  cors?: boolean
 }
 
 export interface RespThisType {
