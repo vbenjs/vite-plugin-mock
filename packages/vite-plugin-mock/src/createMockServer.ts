@@ -138,7 +138,6 @@ function createWatch(opt: ViteMockOptions, config: ResolvedConfig) {
   })
 }
 
-
 // clear cache
 function cleanRequireCache(opt: ViteMockOptions) {
   if (typeof require === 'undefined' || !require.cache) {
@@ -151,7 +150,6 @@ function cleanRequireCache(opt: ViteMockOptions) {
     }
   })
 }
-
 
 function parseJson(req: IncomingMessage): Promise<Recordable> {
   return new Promise((resolve) => {
@@ -194,7 +192,7 @@ async function getMockConfig(opt: ViteMockOptions, config: ResolvedConfig) {
         return true
       }
       if (isFunction(ignore)) {
-        return ignore(item)
+        return !ignore(item)
       }
       if (isRegExp(ignore)) {
         return !ignore.test(path.basename(item))
