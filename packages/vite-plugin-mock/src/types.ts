@@ -7,6 +7,7 @@ export interface ViteMockOptions {
   watchFiles?: boolean
   enable?: boolean
   logger?: boolean
+  cors?: boolean
 }
 
 export interface RespThisType {
@@ -24,10 +25,12 @@ export declare interface MockMethod {
   method?: MethodType
   timeout?: number
   statusCode?: number
-  response?: (
-    this: RespThisType,
-    opt: { url: Recordable; body: Recordable; query: Recordable; headers: Recordable },
-  ) => any
+  response?:
+    | ((
+        this: RespThisType,
+        opt: { url: Recordable; body: Recordable; query: Recordable; headers: Recordable },
+      ) => any)
+    | any
   rawResponse?: (this: RespThisType, req: IncomingMessage, res: ServerResponse) => void
 }
 
