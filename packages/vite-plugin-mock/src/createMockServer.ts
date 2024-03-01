@@ -201,7 +201,7 @@ async function getMockConfig(opt: ViteMockOptions, config: ResolvedConfig) {
         return true
       }
       if (isFunction(ignore)) {
-        return ignore(item)
+        return !ignore(item)
       }
       if (isRegExp(ignore)) {
         return !ignore.test(path.basename(item))
