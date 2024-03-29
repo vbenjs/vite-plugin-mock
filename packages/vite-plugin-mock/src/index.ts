@@ -17,9 +17,13 @@ import {
   parseJson,
   requestMiddleware,
 } from './createMockServer'
-import { resolve } from 'path'
+import { dirname, resolve } from 'path'
+import { fileURLToPath } from 'node:url'
 
-const DIR_CLIENT = resolve(__dirname, '../dist/inspect')
+const DIR_CLIENT = resolve(
+  typeof __dirname !== 'undefined' ? __dirname : dirname(fileURLToPath(import.meta.url)),
+  '../dist/inspect',
+)
 
 export function viteMockServe(opt: ViteMockOptions = {}): Plugin {
   let isDev = false
@@ -56,7 +60,6 @@ export function viteMockServe(opt: ViteMockOptions = {}): Plugin {
             }),
           ),
         )
-        next()
       })
 
       /**
@@ -72,8 +75,9 @@ export function viteMockServe(opt: ViteMockOptions = {}): Plugin {
                 excludeMock.add(url)
               })
               res.end(JSON.stringify({ code: 0 }))
+            } else {
+              next()
             }
-            next()
           })
         } else {
           next()
