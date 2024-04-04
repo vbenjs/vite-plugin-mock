@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -123,9 +127,6 @@ importers:
 
   packages/vite-plugin-mock:
     dependencies:
-      '@types/mockjs':
-        specifier: ^1.0.7
-        version: 1.0.7
       bundle-require:
         specifier: ^4.0.1
         version: 4.0.1(esbuild@0.17.16)
@@ -138,6 +139,9 @@ importers:
       debug:
         specifier: ^4.3.4
         version: 4.3.4
+      esbuild:
+        specifier: '>=0.17'
+        version: 0.17.16
       fast-glob:
         specifier: ^3.2.12
         version: 3.2.12
@@ -154,6 +158,9 @@ importers:
       '@types/debug':
         specifier: ^4.1.7
         version: 4.1.7
+      '@types/mockjs':
+        specifier: ^1.0.7
+        version: 1.0.7
       '@types/node':
         specifier: ^16.18.23
         version: 16.18.23
@@ -1030,7 +1037,7 @@ packages:
 
   /@types/mockjs@1.0.7:
     resolution: {integrity: sha512-OCxXz6hEaJOVpRwuJMiVY5a6LtJcih+br9gwB/Q8ooOBikvk5FpBQ31OlNimXo3EqKha1Z7PFBni+q9m+8NCWg==}
-    dev: false
+    dev: true
 
   /@types/ms@0.7.31:
     resolution: {integrity: sha512-iiUgKzV9AuaEkZqkOLDIvlQiL6ltuZd9tGcW3gwpnX8JbuiuhFlEGmmFXEXkN50Cvq7Os88IY2v0dkDqXYWVgA==}
