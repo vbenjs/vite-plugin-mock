@@ -67,7 +67,8 @@
   },
   "peerDependencies": {
     "mockjs": ">=1.1.0",
-    "vite": ">=4.0.0"
+    "vite": ">=4.0.0",
+    "esbuild": ">=0.17"
   },
   "devDependencies": {
     "@types/mockjs": "^1.0.7",
