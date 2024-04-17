@@ -153,23 +153,29 @@ function cleanRequireCache(opt: ViteMockOptions) {
 
 function parseJson(req: IncomingMessage): Promise<Recordable> {
   return new Promise((resolve) => {
-    let body = ''
-    let jsonStr = ''
+    let jsonStr: Recordable = {}
+    let str = ''
     req.on('data', function (chunk) {
-      body += chunk
+      str += chunk
     })
-    req.on('end', function () {
+    req.on('end', () => {
       try {
-        jsonStr = JSON.parse(body)
-      } catch (err) {
-        jsonStr = ''
+        // json
+        jsonStr = JSON.parse(str)
+      } catch (e) {
+        // x-www-form-urlencoded
+        const params = new URLSearchParams(str)
+        const body: Recordable = {}
+        params.forEach((value, key) => {
+          body[key] = value
+        })
+        jsonStr = body
       }
-      resolve(jsonStr as any)
+      resolve(jsonStr)
       return
     })
   })
 }
-
 // load mock .ts files and watch
 async function getMockConfig(opt: ViteMockOptions, config: ResolvedConfig) {
   const { absConfigPath, absMockPath } = getPath(opt)
