@@ -13,11 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: use Node.js 16
+      - name: use Node.js 20
         uses: actions/setup-node@v1
         with:
           registry-url: https://registry.npmjs.org/
-          node-version: 16
+          node-version: 20
 
       - name: pnpm install and publish
         run: |
