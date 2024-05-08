@@ -100,7 +100,7 @@ export function viteMockServe(opt: ViteMockOptions = {}): Plugin {
 
       const host =
         config.server.host && config.server.host !== '0.0.0.0' ? config.server.host : 'localhost'
-      const source = `${host}:${config.server.port || 5173}`
+      const url = `${host}:${config.server.port || 5173}`
 
       const _printUrls = server.printUrls.bind(server)
 
@@ -108,7 +108,7 @@ export function viteMockServe(opt: ViteMockOptions = {}): Plugin {
         _printUrls()
         console.log(
           `  ${colors.green('➜')}  ${colors.bold('Mock Inspect: ')}` +
-            colors.green(`${config.server.https ? 'https' : 'http'}://${source}/#/__mockInspect`),
+            colors.green(`${config.server.https ? 'https' : 'http'}://${url}/__mockInspect/#/`),
         )
       }
     },
