@@ -6,6 +6,7 @@
   }
 })()
 
+import colors from 'picocolors'
 import type { ViteMockOptions } from './types'
 import sirv from 'sirv'
 import type { Plugin } from 'vite'
@@ -38,7 +39,9 @@ export function viteMockServe(opt: ViteMockOptions = {}): Plugin {
       isDev && createMockServer(opt, config)
     },
 
-    configureServer: async ({ middlewares }) => {
+    configureServer: async (server) => {
+      const { middlewares } = server
+
       const { enable = isDev } = opt
       if (!enable) {
         return
@@ -94,6 +97,20 @@ export function viteMockServe(opt: ViteMockOptions = {}): Plugin {
           dev: true,
         }),
       )
+
+      const host =
+        config.server.host && config.server.host !== '0.0.0.0' ? config.server.host : 'localhost'
+      const source = `${host}:${config.server.port || 5173}`
+
+      const _printUrls = server.printUrls.bind(server)
+
+      server.printUrls = () => {
+        _printUrls()
+        console.log(
+          `  ${colors.green('➜')}  ${colors.bold('Mock Inspect: ')}` +
+            colors.green(`${config.server.https ? 'https' : 'http'}://${source}/#/__mockInspect`),
+        )
+      }
     },
   }
 }
