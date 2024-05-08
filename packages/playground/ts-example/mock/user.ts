@@ -9,11 +9,11 @@ export default (config?: MockConfig) => {
         console.log('body>>>>>>>>', body)
         console.log('query>>>>>>>>', query)
 
-        return {
+        return Promise.resolve({
           code: 0,
           message: 'ok',
           data: { a: 21, 'import.meta.url': import.meta.url },
-        }
+        })
       },
     },
   ]

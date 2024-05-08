@@ -27,7 +27,8 @@
   "scripts": {
     "clean": "rimraf dist && rimraf es",
     "dev": "unbuild --stub",
-    "build": "unbuild",
+    "build:inpect": "vite build src/inspect",
+    "build": "unbuild && npm run build:inpect",
     "log": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "prepublishOnly": "npm run build"
   },
@@ -48,13 +49,21 @@
   },
   "homepage": "https://github.com/anncwb/vite-plugin-mock/tree/master/#readme",
   "dependencies": {
+    "@vitejs/plugin-vue": "^4.1.0",
+    "@vueuse/core": "^10.1.0",
     "bundle-require": "^4.0.1",
     "chokidar": "^3.5.3",
     "connect": "^3.7.0",
     "debug": "^4.3.4",
+    "element-plus": "^2.3.3",
     "fast-glob": "^3.2.12",
+    "ky": "^0.33.3",
     "path-to-regexp": "^6.2.1",
-    "picocolors": "^1.0.0"
+    "picocolors": "^1.0.0",
+    "sirv": "^2.0.3",
+    "unocss": "^0.51.8",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6"
   },
   "peerDependencies": {
     "mockjs": ">=1.1.0",
@@ -66,11 +75,16 @@
     "@types/connect": "^3.4.35",
     "@types/debug": "^4.1.7",
     "@types/node": "^16.18.23",
+    "@vue/compiler-dom": "^3.2.47",
+    "@vue/compiler-sfc": "^3.2.47",
     "mockjs": "^1.1.0",
     "rimraf": "^5.0.0",
     "tsup": "6.7.0",
     "typescript": "^5.0.4",
     "unbuild": "^1.2.1",
-    "vite": "4.2.1"
+    "unplugin-auto-import": "^0.15.3",
+    "unplugin-vue-components": "^0.24.1",
+    "vite": "4.2.1",
+    "vue-tsc": "^1.6.1"
   }
 }
