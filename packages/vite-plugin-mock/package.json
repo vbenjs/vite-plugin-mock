@@ -52,9 +52,9 @@
     "chokidar": "^3.5.3",
     "connect": "^3.7.0",
     "debug": "^4.3.4",
-    "fast-glob": "^3.2.12",
     "path-to-regexp": "^6.2.1",
-    "picocolors": "^1.0.0"
+    "picocolors": "^1.0.0",
+    "tinyglobby": "^0.2.0"
   },
   "peerDependencies": {
     "mockjs": ">=1.1.0",

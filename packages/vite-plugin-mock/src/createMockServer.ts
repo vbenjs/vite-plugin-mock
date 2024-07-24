@@ -5,7 +5,7 @@ import fs from 'node:fs'
 import chokidar from 'chokidar'
 import colors from 'picocolors'
 import url from 'url'
-import fg from 'fast-glob'
+import tg from 'tinyglobby'
 import Mock from 'mockjs'
 import { pathToRegexp, match } from 'path-to-regexp'
 import { isArray, isFunction, sleep, isRegExp, isAbsPath } from './utils'
@@ -189,8 +189,9 @@ async function getMockConfig(opt: ViteMockOptions, config: ResolvedConfig) {
     return ret
   }
 
-  const mockFiles = fg
-    .sync(`**/*.{ts,mjs,js}`, {
+  const mockFiles = tg
+    .globSync({
+      patterns: [`**/*.{ts,mjs,js}`],
       cwd: absMockPath,
     })
     .filter((item) => {
