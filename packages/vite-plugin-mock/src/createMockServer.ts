@@ -62,7 +62,7 @@ export async function requestMiddleware(opt: ViteMockOptions) {
 
     if (matchRequest) {
       const isGet = req.method && req.method.toUpperCase() === 'GET'
-      const { response, rawResponse, timeout, statusCode, url } = matchRequest
+      const { response: handler, rawResponse, timeout, statusCode, url } = matchRequest
 
       if (timeout) {
         await sleep(timeout)
@@ -87,16 +87,40 @@ export async function requestMiddleware(opt: ViteMockOptions) {
         await rawResponse.bind(self)(req, res)
       } else {
         const body = await parseJson(req)
-        res.setHeader('Content-Type', 'application/json')
         if (opt) {
           res.setHeader('Access-Control-Allow-Credentials', true)
           res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*')
         }
         res.statusCode = statusCode || 200
-        const mockResponse = isFunction(response)
-          ? response.bind(self)({ url: req.url as any, body, query, headers: req.headers })
-          : response
-        res.end(JSON.stringify(Mock.mock(mockResponse)))
+        let response = isFunction(handler)
+          ? handler.bind(self)({
+              url: req.url as any,
+              body,
+              query,
+              headers: req.headers,
+              req,
+              res,
+            })
+          : handler
+        if (response.then) {
+          response = await response
+        }
+        response = Mock.mock(response)
+        if (typeof response === 'undefined') {
+          res.statusCode = 204
+          res.end()
+          return
+        }
+        if (!res.statusCode) {
+          res.statusCode = statusCode || 200
+        }
+        if (!res.getHeader('Content-Type')) {
+          res.setHeader('Content-Type', guessContentType(response))
+        }
+        if (res.getHeader('Content-Type') === 'application/json' && typeof response !== 'string') {
+          response = JSON.stringify(response)
+        }
+        res.end(response)
       }
 
       logger && loggerOutput('request invoke', req.url!)
@@ -105,6 +129,19 @@ export async function requestMiddleware(opt: ViteMockOptions) {
     next()
   }
   return middleware
+}
+
+function guessContentType(body: any) {
+  if (body instanceof Buffer || body instanceof Uint8Array) {
+    return 'application/octet-stream'
+  }
+  switch (typeof body) {
+    case 'string':
+      return 'text/plain'
+    case 'undefined':
+    default:
+      return 'application/json'
+  }
 }
 
 // create watch mock

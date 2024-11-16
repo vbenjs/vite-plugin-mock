@@ -173,6 +173,18 @@ export default [
     },
   },
   {
+    url: '/api/get',
+    method: 'get',
+    response: async ({ query }) => {
+      return {
+        code: 0,
+        data: {
+          name: 'vben',
+        },
+      }
+    },
+  },
+  {
     url: '/api/post',
     method: 'post',
     timeout: 2000,
@@ -181,6 +193,36 @@ export default [
       data: {
         name: 'vben',
       },
+    },
+  },
+  // Custom status code and response
+  {
+    url: '/api/query',
+    method: 'get',
+    response: ({ query, res }) => {
+      // res.setHeader('X-Hello', 'World')
+      if (query.name === 'vite') {
+        res.statusCode = 200
+        return { message: 'OK' }
+      } else {
+        res.statusCode = 404
+        return { message: 'Not Found' }
+      }
+    },
+  },
+  {
+    url: '/api/plaintext',
+    method: 'get',
+    response: () => {
+      return '200 OK'
+    },
+  },
+  // 204 No Content
+  {
+    url: '/api/204',
+    method: 'get',
+    response: () => {
+      return
     },
   },
   {
