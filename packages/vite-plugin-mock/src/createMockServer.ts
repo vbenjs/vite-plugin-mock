@@ -13,6 +13,11 @@ import { IncomingMessage, NextHandleFunction } from 'connect'
 import { bundleRequire, GetOutputFile, JS_EXT_RE } from 'bundle-require'
 import type { ResolvedConfig } from 'vite'
 
+/**
+ * item format like `${url}+${method}`
+ */
+export const excludeMock = new Set<string>()
+
 export let mockData: MockMethod[] = []
 
 export async function createMockServer(
@@ -51,6 +56,10 @@ export async function requestMiddleware(opt: ViteMockOptions) {
     const reqUrl = queryParams.pathname
 
     const matchRequest = mockData.find((item) => {
+      // filter
+      if (excludeMock.has(`${item.url}+${item.method || 'get'}`)) {
+        return false
+      }
       if (!reqUrl || !item || !item.url) {
         return false
       }
@@ -89,12 +98,12 @@ export async function requestMiddleware(opt: ViteMockOptions) {
         const body = await parseJson(req)
         res.setHeader('Content-Type', 'application/json')
         if (opt) {
-          res.setHeader('Access-Control-Allow-Credentials', true)
+          res.setHeader('Access-Control-Allow-Credentials', 'true')
           res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*')
         }
         res.statusCode = statusCode || 200
         const mockResponse = isFunction(response)
-          ? response.bind(self)({ url: req.url as any, body, query, headers: req.headers })
+          ? await response.bind(self)({ url: req.url as any, body, query, headers: req.headers })
           : response
         res.end(JSON.stringify(Mock.mock(mockResponse)))
       }
@@ -139,7 +148,7 @@ function createWatch(opt: ViteMockOptions, config: ResolvedConfig) {
 }
 
 // clear cache
-function cleanRequireCache(opt: ViteMockOptions) {
+export function cleanRequireCache(opt: ViteMockOptions) {
   if (typeof require === 'undefined' || !require.cache) {
     return
   }
@@ -151,7 +160,7 @@ function cleanRequireCache(opt: ViteMockOptions) {
   })
 }
 
-function parseJson(req: IncomingMessage): Promise<Recordable> {
+export function parseJson(req: IncomingMessage): Promise<Recordable> {
   return new Promise((resolve) => {
     let jsonStr: Recordable = {}
     let str = ''

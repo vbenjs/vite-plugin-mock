@@ -7,7 +7,7 @@
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "module": "commonjs",
+    "module": "esnext",
     "lib": ["ESNext"],
     "types": ["vite/client", "node"],
     "sourceMap": false,
